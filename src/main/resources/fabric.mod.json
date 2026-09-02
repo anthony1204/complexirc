@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "complexirc",
+	"version": "${version}",
+	"name": "complexirc",
+	"description": "simpleirc but more complex",
+	"authors": [
+		"Anthony4933"
+	],
+	"contact": {
+		"homepage": "https://anthonycat.top"
+	},
+	"license": "ARR",
+	"icon": "assets/complexirc/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"top.anthonycat.complexirc.Complexirc"
+		],
+		"client": [
+			"top.anthonycat.complexirc.client.ComplexircClient"
+		]
+	},
+	"mixins": [
+		"complexirc.mixins.json",
+		{
+			"config": "complexirc.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*",
+		"owo-lib": "*"
+	}
+}

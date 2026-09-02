@@ -1,0 +1,190 @@
+package top.anthonycat.complexirc.client.mixin;
+
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.multiplayer.chat.GuiMessage;
+import net.minecraft.client.multiplayer.chat.GuiMessageSource;
+import net.minecraft.client.multiplayer.chat.GuiMessageTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MessageSignature;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import top.anthonycat.complexirc.client.ComplexircClient;
+import top.anthonycat.complexirc.client.hiss;
+
+import java.util.List;
+
+@Mixin(ChatComponent.class)
+public abstract class chatcomponentmixin implements hiss {
+//   @Unique
+//   int green = Color.GREEN.getRGB();
+
+//   @Inject(method = "extractRenderState", at = @At("HEAD"))
+//   public void renderstate(final GuiGraphicsExtractor graphics, final Font font, final int ticks, final int mouseX, final int mouseY, final ChatComponent.DisplayMode displayMode, final boolean changeCursorOnInsertions, CallbackInfo ci) {
+//      ChatComponent dis = (ChatComponent) (Object) this;
+//      if (dis.isChatFocused()) {
+//         String message = "error..? report this pls";
+//         switch (ComplexircClient.currentchannel){
+//            case irc -> message = "irc";
+//            case global -> message = "global";
+//            case normal -> message = "mc chat";
+//         }
+//         Complexirc.LOGGER.info(message);
+//         Complexirc.LOGGER.info("render it.");
+//         graphics.text(Minecraft.getInstance().font, message, 160, green);
+//      }
+//   }
+   @Shadow
+   @Final
+   @Mutable
+   private List<GuiMessage> allMessages;
+
+
+
+
+
+
+   @Unique
+   private ComplexircClient.channel lastchan = ComplexircClient.channel.global;
+
+
+   @Invoker("refreshTrimmedMessages")
+   public abstract void refreshfuckintrimmmedmessages();
+
+
+
+
+   @Inject(method = "addPlayerMessage", at = @At("HEAD"),cancellable = true)
+   public void addPlayerMessagea(final Component message, @Nullable final MessageSignature signature, @Nullable final GuiMessageTag tag,CallbackInfo ci) {
+      if (ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)) {
+         this.customaddmessage(message, signature, GuiMessageSource.PLAYER, tag);
+         ci.cancel();
+      }
+   }
+
+
+
+   @Inject(method = "<init>", at = @At("TAIL"))
+   private void phamburgerinit(Minecraft mc, CallbackInfo ci) {
+      lastchan = ComplexircClient.currentchannel;
+      customrefresh();
+   }
+
+
+
+   private void customaddmessage(final Component contents, @Nullable final MessageSignature signature, final GuiMessageSource source, @Nullable final GuiMessageTag tag) {
+      GuiMessage message = new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(), contents, signature, source, tag);
+      ComplexircClient.globalmsg.add(message);
+      ComplexircClient.mcmsg.add(message);
+      //customrefresh();
+      //refreshfuckintrimmmedmessages();
+   }
+
+   public void customrefresh(){
+//      allMessages.clear();
+      if (ComplexircClient.currentchannel== ComplexircClient.channel.global){
+//         allMessages.addAll(ComplexircClient.globalmsg);
+         allMessages = ComplexircClient.globalmsg;
+      } if (ComplexircClient.currentchannel== ComplexircClient.channel.normal){
+//         allMessages.addAll(ComplexircClient.mcmsg);
+         allMessages = ComplexircClient.mcmsg;
+      } if (ComplexircClient.currentchannel== ComplexircClient.channel.irc){
+//         allMessages.addAll(ComplexircClient.ircmsg);
+         allMessages = ComplexircClient.ircmsg;
+      }
+
+      refreshfuckintrimmmedmessages();
+   }
+
+
+   @Inject(method="tick",at=@At("HEAD"))
+   public void tikck(CallbackInfo ci) {
+      ComplexircClient.channel current = ComplexircClient.currentchannel;
+
+      if (current == lastchan) {
+         return;
+      }
+      lastchan = current;
+
+      customrefresh();
+
+//      if (current==ComplexircClient.channel.irc) {
+//         allMessages = ComplexircClient.ircmsg;
+//      }
+//      if (current==ComplexircClient.channel.global){
+//         allMessages = ComplexircClient.globalmsg;
+//      }
+//      if (current==ComplexircClient.channel.normal){
+//         allMessages = ComplexircClient.mcmsg;
+//      }
+//      refreshfuckintrimmmedmessages();
+
+
+   }
+
+   @Override
+   public void complexirc$refresh(){
+      refreshfuckintrimmmedmessages();
+   }
+   @Override
+   public void complexirc$customrefresh(){
+      customrefresh();
+   }
+   @Override
+   public void complexirc$updatechannel(){
+      customrefresh();
+   }
+
+
+   @Inject(method = "addClientSystemMessage", at = @At("HEAD"),cancellable = true)
+   public void addClientSystemMessage(final Component message,CallbackInfo ci) {
+      customaddmessage(message,null, GuiMessageSource.SYSTEM_CLIENT,GuiMessageTag.system());
+//      ComplexircClient.globalmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(), message,null, GuiMessageSource.SYSTEM_CLIENT,GuiMessageTag.system()));
+//      ComplexircClient.mcmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(), message,null, GuiMessageSource.SYSTEM_CLIENT,GuiMessageTag.system()));
+//
+//      customrefresh();
+//      ci.cancel();
+   }
+   @Inject(method = "addServerSystemMessage", at = @At("HEAD"),cancellable = true)
+   public void addClientSystemMessagea(final Component message,CallbackInfo ci) {
+      customaddmessage(message,null, GuiMessageSource.SYSTEM_SERVER,GuiMessageTag.system());
+//      ComplexircClient.ircmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(), message,null, GuiMessageSource.SYSTEM_SERVER,GuiMessageTag.system()));
+//      ComplexircClient.globalmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(), message,null, GuiMessageSource.SYSTEM_SERVER,GuiMessageTag.system()));
+//      ComplexircClient.mcmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(), message,null, GuiMessageSource.SYSTEM_SERVER,GuiMessageTag.system()));
+//      customrefresh();
+//      ci.cancel();
+   }
+
+
+
+
+   //defaul messages
+   @Inject(method = "addMessage", at = @At("HEAD"),cancellable = true)
+   public void addMessage(final Component contents, final @Nullable MessageSignature signature, final GuiMessageSource source, final @Nullable GuiMessageTag tag,CallbackInfo ci) {
+      GuiMessage message = new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(), contents, signature, source, tag);
+      ComplexircClient.globalmsg.add(message);
+      ComplexircClient.mcmsg.add(message);
+      customrefresh();
+//      ci.cancel();
+   }
+
+
+   @Inject(method = "clearMessages", at = @At("HEAD"))
+   public void clearMessages(final boolean history,CallbackInfo ci) {
+      ComplexircClient.mcmsg.clear();
+      ComplexircClient.globalmsg.clear();
+      ComplexircClient.ircmsg.clear();
+      customrefresh();
+   }
+
+
+
+
+}
+
+

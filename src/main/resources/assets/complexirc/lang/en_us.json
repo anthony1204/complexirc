@@ -1,0 +1,9 @@
+{
+  "text.config.complex-irc.category.serverstuff": "server connection details",
+  "text.config.complex-irc.option.serverstuff.serverip": "ip",
+  "text.config.complex-irc.option.serverstuff.port": "port",
+  "text.config.complex-irc.option.serverstuff.username": "username to join with",
+  "text.config.complex-irc.option.serverstuff.postjoinchannel": "channel to join after connecting",
+  "text.config.complex-irc.option.serverstuff.channelpass": "channel password (leave empty if none)",
+  "text.config.complex-irc.option.postcommand": "post join commands"
+}
