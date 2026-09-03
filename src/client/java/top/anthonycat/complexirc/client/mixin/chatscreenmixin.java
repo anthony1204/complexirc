@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.anthonycat.complexirc.Complexirc;
 import top.anthonycat.complexirc.client.ComplexircClient;
 import top.anthonycat.complexirc.client.broofbutton;
-import top.anthonycat.complexirc.client.hiss;
 import top.anthonycat.complexirc.client.util;
 
 import java.awt.*;

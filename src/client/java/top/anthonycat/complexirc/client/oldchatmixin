@@ -1,3 +1,17 @@
+note: this is old code from before i figured out there was 1 function that could do this all
+
+
+package top.anthonycat.complexirc.client;
+
+public interface hiss {
+   void complexirc$refresh();
+   void complexirc$customrefresh();
+   void complexirc$updatechannel();
+}
+
+
+
+
 package top.anthonycat.complexirc.client.mixin;
 
 

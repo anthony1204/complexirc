@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.anthonycat.complexirc.client.ComplexircClient;
 import top.anthonycat.complexirc.client.Config;
-import top.anthonycat.complexirc.client.hiss;
 import top.anthonycat.complexirc.client.util;
 
 @Mixin(ClientPacketListener.class)
