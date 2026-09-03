@@ -48,7 +48,7 @@ public class chatscreenmixin extends Screen {
          ComplexircClient.talkinirc = false;
          ComplexircClient.currentchannel = ComplexircClient.channel.normal;
 
-         Minecraft.getInstance().gui.hud.getChat().setVisibleMessageFilter(msg -> {
+         Minecraft.getInstance().gui.getChat().setVisibleMessageFilter(msg -> {
             boolean decision = true;
             if (msg.content().getString().startsWith("IRC | ")) decision = false;
 
@@ -64,7 +64,7 @@ public class chatscreenmixin extends Screen {
 
          cs.onClose();
 
-         Minecraft.getInstance().gui.setScreen(new ChatScreen("", false));
+         Minecraft.getInstance().setScreen(new ChatScreen("", false));
 
          GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), mx, my);
         // ((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
@@ -74,7 +74,7 @@ public class chatscreenmixin extends Screen {
          util.msg("<blue>IRC | changed channel to global (both)");
          ComplexircClient.currentchannel = ComplexircClient.channel.global;
 
-         Minecraft.getInstance().gui.hud.getChat().setVisibleMessageFilter(msg -> true);
+         Minecraft.getInstance().gui.getChat().setVisibleMessageFilter(msg -> true);
 
 
          double mx = Minecraft.getInstance().mouseHandler.xpos();
@@ -82,7 +82,7 @@ public class chatscreenmixin extends Screen {
 
          cs.onClose();
 
-         Minecraft.getInstance().gui.setScreen(new ChatScreen("", false));
+         Minecraft.getInstance().setScreen(new ChatScreen("", false));
 
          GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), mx, my);
       //   ((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
@@ -106,7 +106,7 @@ public class chatscreenmixin extends Screen {
          }
 
          ComplexircClient.talkinirc = true;
-         Minecraft.getInstance().gui.hud.getChat().setVisibleMessageFilter(msg -> {
+         Minecraft.getInstance().gui.getChat().setVisibleMessageFilter(msg -> {
             boolean decision = false;
             if (msg.content().getString().startsWith("IRC | ")) decision = true;
             if (msg.source()!= GuiMessageSource.PLAYER) decision = true;
@@ -121,7 +121,7 @@ public class chatscreenmixin extends Screen {
 
          cs.onClose();
 
-         Minecraft.getInstance().gui.setScreen(new ChatScreen("", false));
+         Minecraft.getInstance().setScreen(new ChatScreen("", false));
          GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), mx, my);
         // ((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
       }).bounds(220, this.height - 38, 96, 20).build();

@@ -42,7 +42,7 @@ public abstract class chatcomponentmixin {
 
 
 
-      GuiMessage message = new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(), contents, signature, source, tag);
+      GuiMessage message = new GuiMessage(Minecraft.getInstance().gui.getGuiTicks(), contents, signature, source, tag);
 
       this.logChatMessage(message);
       this.addMessageToQueue(message);
