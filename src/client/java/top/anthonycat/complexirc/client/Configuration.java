@@ -22,6 +22,8 @@ public class Configuration {
       public String channelpass = "channel password leave empty if none";
    }
 
+   public Boolean fixtimestamps = false;
+
    public List<String> postcommand = new ArrayList<>();
 
 

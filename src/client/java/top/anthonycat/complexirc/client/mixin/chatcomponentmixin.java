@@ -40,6 +40,10 @@ public abstract class chatcomponentmixin {
          }
       }
 
+      if (ComplexircClient.CONFIG.fixtimestamps()){
+         return;
+      }
+
 
 
       GuiMessage message = new GuiMessage(Minecraft.getInstance().gui.getGuiTicks(), contents, signature, source, tag);
