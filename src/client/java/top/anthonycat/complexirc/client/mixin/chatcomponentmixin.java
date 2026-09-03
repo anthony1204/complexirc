@@ -20,7 +20,7 @@ import top.anthonycat.complexirc.client.util;
 
 import java.util.List;
 
-@Mixin(value = ChatComponent.class,priority = 3000)
+@Mixin(value = ChatComponent.class,priority = 100)
 public abstract class chatcomponentmixin {
 
    @Shadow @Final private List<GuiMessage> allMessages;
