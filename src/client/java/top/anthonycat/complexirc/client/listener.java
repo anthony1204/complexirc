@@ -103,9 +103,9 @@ public class listener extends ListenerAdapter {
 //       return;
 //      }
 
-      Component aug;
-
-      aug = MinecraftClientAudiences.of().asNative(ComplexircClient.mm.deserialize("<blue>IRC | <<red>%s<reset>> %s".formatted(e.getUser().getNick(),e.getMessage())));
+//      Component aug;
+//
+//      aug = MinecraftClientAudiences.of().asNative(ComplexircClient.mm.deserialize("<blue>IRC | <<red>%s<reset>> %s".formatted(e.getUser().getNick(),e.getMessage())));
 
 
 //      ComplexircClient.ircmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(),
@@ -113,9 +113,10 @@ public class listener extends ListenerAdapter {
 //      ComplexircClient.globalmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(),
 //              aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
      // ((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
-      if (ComplexircClient.currentchannel== ComplexircClient.channel.irc) {
-         util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
-      }
+      util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
+//      if (ComplexircClient.currentchannel== ComplexircClient.channel.irc) {
+//         util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
+//      }
 
 //      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)) {
 //         util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
