@@ -3,14 +3,17 @@ package top.anthonycat.complexirc.client;
 
 
 
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
+
 import java.util.ArrayList;
 import java.util.List;
 
-@io.wispforest.owo.config.annotation.Config(name="complex-irc",wrapperName = "Config")
-@Modmenu(modId = "complexirc")
-public class Configuration {
+@Config(name="complexirc")
+public class Configuration implements ConfigData {
 
-   @Nest
+   @ConfigEntry.Gui.CollapsibleObject
    public server serverstuff = new server();
    public static class server {
       public String serverip = "baseduser.eu.org";

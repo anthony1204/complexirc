@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.sun.jna.platform.unix.X11;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
@@ -27,7 +29,6 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.spongepowered.asm.mixin.Unique;
 import top.anthonycat.complexirc.Complexirc;
-import top.anthonycat.complexirc.client.Config;
 
 import java.awt.*;
 import java.io.IOException;
@@ -36,7 +37,7 @@ import java.util.List;
 
 public class ComplexircClient implements ClientModInitializer {
 
-	public static final Config CONFIG = Config.createAndLoad();
+	public static top.anthonycat.complexirc.client.Configuration CONFIG = null;
 
 	private final int green = new Color(0,255,0).getRGB();
 
@@ -65,6 +66,8 @@ public class ComplexircClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		AutoConfig.register(top.anthonycat.complexirc.client.Configuration.class, Toml4jConfigSerializer::new);
+		CONFIG = AutoConfig.getConfigHolder(top.anthonycat.complexirc.client.Configuration.class).getConfig();
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		//setupirc();
 		KeyMappingHelper.registerKeyMapping(mcirc);
