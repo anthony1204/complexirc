@@ -1,6 +1,5 @@
 package top.anthonycat.complexirc.client;
 
-import io.wispforest.owo.ui.util.FocusHandler;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;

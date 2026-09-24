@@ -1,9 +1,7 @@
 package top.anthonycat.complexirc.client;
 
 
-import io.wispforest.owo.config.annotation.Modmenu;
-import io.wispforest.owo.config.annotation.Nest;
-import io.wispforest.owo.config.annotation.SectionHeader;
+
 
 import java.util.ArrayList;
 import java.util.List;
