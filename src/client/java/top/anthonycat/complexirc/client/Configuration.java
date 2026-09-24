@@ -16,11 +16,12 @@ public class Configuration implements ConfigData {
    @ConfigEntry.Gui.CollapsibleObject
    public server serverstuff = new server();
    public static class server {
-      public String serverip = "baseduser.eu.org";
+      public String serverip = "irc.anthonycat.top";
       public Integer port = 6667;
-      public String username = "meowmrrp";
+      public String username = "complexircuser";
       public String postjoinchannel = "#channelname";
-      public String channelpass = "channel password leave empty if none";
+      public String channelpass = "";
+      public boolean autoreconnect = true;
    }
 
    public Boolean fixtimestamps = false;

@@ -1,10 +1,10 @@
 {
-  "text.config.complex-irc.category.serverstuff": "server connection details",
-  "text.config.complex-irc.option.serverstuff.serverip": "ip",
-  "text.config.complex-irc.option.serverstuff.port": "port",
-  "text.config.complex-irc.option.serverstuff.username": "username to join with",
-  "text.config.complex-irc.option.serverstuff.postjoinchannel": "channel to join after connecting",
-  "text.config.complex-irc.option.serverstuff.channelpass": "channel password (leave empty if none)",
-  "text.config.complex-irc.option.postcommand": "post join commands",
-  "text.config.complex-irc.option.fixtimestamps": "fix timestamps + every other chat-related mod's functions (breaks chat channels a bit)"
+  "text.autoconfig.complexirc.option.serverstuff": "server connection details",
+  "text.autoconfig.complexirc.option.serverstuff.serverip": "ip",
+  "text.autoconfig.complexirc.option.serverstuff.port": "port",
+  "text.autoconfig.complexirc.option.serverstuff.username": "username to join with",
+  "text.autoconfig.complexirc.option.serverstuff.postjoinchannel": "channel to join after connecting",
+  "text.autoconfig.complexirc.option.serverstuff.channelpass": "channel password (leave empty if none)",
+  "text.autoconfig.complexirc.option.postcommand": "post join commands",
+  "text.autoconfig.complexirc.option.fixtimestamps": "fix timestamps + every other chat-related mod's functions (breaks chat channels a bit)"
 }

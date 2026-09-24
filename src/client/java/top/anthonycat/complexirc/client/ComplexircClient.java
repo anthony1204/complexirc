@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.sun.jna.platform.unix.X11;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -20,6 +21,7 @@ import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.Identifier;
@@ -71,6 +73,7 @@ public class ComplexircClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		//setupirc();
 		KeyMappingHelper.registerKeyMapping(mcirc);
+
 
 		ClientTickEvents.END_CLIENT_TICK.register(clien -> {
 
@@ -154,7 +157,33 @@ public class ComplexircClient implements ClientModInitializer {
 										util.msg("<blue>disconnecting from irc");
 										return 1;
 									})
-					)
+					).then(
+							ClientCommands.literal("config")
+									.executes((c) ->{
+										util.msg("<blue>probably™ opened config");
+
+										Minecraft.getInstance().execute(() -> {
+											Screen s = AutoConfigClient.getConfigScreen(top.anthonycat.complexirc.client.Configuration.class, Minecraft.getInstance().gui.screen()).get();
+										//	util.msg("aughscreen: "+s.toString());
+											Minecraft.getInstance().setScreenAndShow(s);
+
+										});
+
+										return 1;
+									}))
+					.then(
+							ClientCommands.literal("list")
+									.executes((c) ->{
+										StringBuilder names = new StringBuilder("users in ");
+										names.append(CONFIG.serverstuff.postjoinchannel).append(": ");
+										ComplexircClient.bot.getUserChannelDao().getChannel(CONFIG.serverstuff.postjoinchannel).getUsers().forEach((u) -> {
+											String n = "["+u.getNick()+" ("+u.getRealName()+")]";
+											names.append(n);
+										});
+										util.msg("<blue>IRC | "+names);
+
+										return 1;
+									}))
 
 			);
 
@@ -171,7 +200,8 @@ public class ComplexircClient implements ClientModInitializer {
 			bot.sendIRC().quitServer("Restarting :3");
 
 			try {
-				ircthread.join(5000);
+				ircthread.join(1000);
+				ircthread.interrupt();
 			} catch (InterruptedException ignored) {}
 
 		}
@@ -186,6 +216,9 @@ public class ComplexircClient implements ClientModInitializer {
 		config = new Configuration.Builder()
               .setName(CONFIG.serverstuff.username) //Nick of the bot. CHANGE IN YOUR CODE
               .setLogin(CONFIG.serverstuff.username) //Login part of hostmask, eg name:login@host
+				  .setRealName(CONFIG.serverstuff.username+" (ComplexIRC)")
+				  .setAutoReconnect(CONFIG.serverstuff.autoreconnect)
+				  .setAutoReconnectAttempts(5)
               .setAutoNickChange(true) //Automatically change nick when the current one is in use
               .addAutoJoinChannel(channelwithpass.toString())//Join #pircbotx channel on connect
               .addListener(new listener())

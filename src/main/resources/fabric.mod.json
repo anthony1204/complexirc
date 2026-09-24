@@ -3,7 +3,7 @@
 	"id": "complexirc",
 	"version": "${version}",
 	"name": "complexirc",
-	"description": "simpleirc but more complex",
+	"description": "simpleirc but.. actually less complex (type /irc config i didnt get mod menu working)",
 	"authors": [
 		"Anthony4933"
 	],
@@ -35,6 +35,7 @@
 		"fabricloader": ">=0.19.5",
 		"minecraft": "~26.3",
 		"java": ">=25",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"modmenu": "*"
 	}
 }

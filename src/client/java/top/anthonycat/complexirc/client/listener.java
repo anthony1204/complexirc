@@ -40,6 +40,13 @@ public class listener extends ListenerAdapter {
    }
 
    @Override
+   public void onNickChange(NickChangeEvent e){
+      util.msg("<blue>IRC | %s changed nick to %s".formatted(e.getOldNick(),e.getNewNick()));
+   }
+
+
+
+   @Override
    public void onDisconnect(DisconnectEvent e){
       if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
          return;
