@@ -22,7 +22,7 @@ public class listener extends ListenerAdapter {
    public void onConnect(ConnectEvent event) {
       Complexirc.LOGGER.info("connected to irc server");
       ComplexircClient.talkinirc = true;
-      ComplexircClient.CONFIG.postcommand().forEach((e) -> {
+      ComplexircClient.CONFIG.postcommand.forEach((e) -> {
          ComplexircClient.bot.sendRaw().rawLine(e);
          Complexirc.LOGGER.info("sending {}", e);
       });

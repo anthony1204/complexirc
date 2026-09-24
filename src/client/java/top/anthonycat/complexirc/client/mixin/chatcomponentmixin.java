@@ -40,7 +40,7 @@ public abstract class chatcomponentmixin {
          }
       }
 
-      if (ComplexircClient.CONFIG.fixtimestamps()){
+      if (ComplexircClient.CONFIG.fixtimestamps){
          return;
       }
 

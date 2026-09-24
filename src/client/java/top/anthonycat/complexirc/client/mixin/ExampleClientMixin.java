@@ -64,8 +64,8 @@ public class ExampleClientMixin {
 //					aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
 			//((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
 
-			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel(),content);
-			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.CONFIG.serverstuff.username(),content));
+			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel,content);
+			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(),content));
 			return;
 		}
 
@@ -96,8 +96,8 @@ public class ExampleClientMixin {
 //		((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
 
 
-		ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel(),content);
-		util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.CONFIG.serverstuff.username(),content));
+		ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel,content);
+		util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(),content));
 		info.cancel();
 	}
 }

@@ -19,6 +19,9 @@
 		],
 		"client": [
 			"top.anthonycat.complexirc.client.ComplexircClient"
+		],
+		"modmenu": [
+			"top.anthonycat.complexirc.client.mm"
 		]
 	},
 	"mixins": [

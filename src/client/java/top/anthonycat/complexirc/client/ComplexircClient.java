@@ -41,7 +41,7 @@ public class ComplexircClient implements ClientModInitializer {
 
 	private final int green = new Color(0,255,0).getRGB();
 
-	public KeyMapping mcirc = new KeyMapping("switch", InputConstants.Type.KEYSYM, InputConstants.KEY_MINUS,KeyMapping.Category.register(Identifier.fromNamespaceAndPath("complexirc","keybinds")));
+	public KeyMapping mcirc = new KeyMapping("switch", InputConstants.Type.KEYBOARD, InputConstants.KEY_MINUS,KeyMapping.Category.register(Identifier.fromNamespaceAndPath("complexirc","keybinds")));
 
 
 //	public static List<GuiMessage> mcmsg = new ArrayList<>();
@@ -178,18 +178,18 @@ public class ComplexircClient implements ClientModInitializer {
 
 		StringBuilder channelwithpass = new StringBuilder();
 
-		channelwithpass.append(CONFIG.serverstuff.postjoinchannel());
-		if (CONFIG.serverstuff.channelpass()!=""){
-			channelwithpass.append(" ").append(CONFIG.serverstuff.channelpass());
+		channelwithpass.append(CONFIG.serverstuff.postjoinchannel);
+		if (CONFIG.serverstuff.channelpass!=""){
+			channelwithpass.append(" ").append(CONFIG.serverstuff.channelpass);
 		}
 
 		config = new Configuration.Builder()
-              .setName(CONFIG.serverstuff.username()) //Nick of the bot. CHANGE IN YOUR CODE
-              .setLogin(CONFIG.serverstuff.username()) //Login part of hostmask, eg name:login@host
+              .setName(CONFIG.serverstuff.username) //Nick of the bot. CHANGE IN YOUR CODE
+              .setLogin(CONFIG.serverstuff.username) //Login part of hostmask, eg name:login@host
               .setAutoNickChange(true) //Automatically change nick when the current one is in use
               .addAutoJoinChannel(channelwithpass.toString())//Join #pircbotx channel on connect
               .addListener(new listener())
-				  .addServer(CONFIG.serverstuff.serverip(), CONFIG.serverstuff.port())
+				  .addServer(CONFIG.serverstuff.serverip, CONFIG.serverstuff.port)
 				.buildConfiguration();
 		ircthread = new Thread(() -> {
 			bot = new PircBotX(config);
