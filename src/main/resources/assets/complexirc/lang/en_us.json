@@ -6,5 +6,6 @@
   "text.autoconfig.complexirc.option.serverstuff.postjoinchannel": "channel to join after connecting",
   "text.autoconfig.complexirc.option.serverstuff.channelpass": "channel password (leave empty if none)",
   "text.autoconfig.complexirc.option.postcommand": "post join commands",
+  "text.autoconfig.complexirc.option.meowkey": "meow-cipher/message encryptor key to encrypt with",
   "text.autoconfig.complexirc.option.fixtimestamps": "fix timestamps + every other chat-related mod's functions (breaks chat channels a bit)"
 }

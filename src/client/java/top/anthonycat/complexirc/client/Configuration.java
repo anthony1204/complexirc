@@ -24,9 +24,10 @@ public class Configuration implements ConfigData {
       public boolean autoreconnect = true;
    }
 
-   public Boolean fixtimestamps = false;
+//   public Boolean fixtimestamps = false; //note: chat channels got removed
 
    public List<String> postcommand = new ArrayList<>();
+   public String meowkey = "iNseRtSeCurESoMeThIngHerE";
 
 
 }

@@ -29,12 +29,18 @@ public class listener extends ListenerAdapter {
       if (Minecraft.getInstance().player!=null){
          MinecraftClientAudiences.of().audience().sendMessage(MiniMessage.miniMessage().deserialize("<blue>IRC | connected to irc successfully"));
       }
+      util.msg("<blue>IRC | topic: "+ComplexircClient.bot.getUserChannelDao().getChannel(ComplexircClient.CONFIG.serverstuff.postjoinchannel).getTopic());
    }
 
 
    @Override
    public void onPrivateMessage(PrivateMessageEvent e){
       util.msg("<blue>IRC | DM from "+e.getUser().getNick()+": "+e.getMessage());
+   }
+
+   @Override
+   public void onTopic(TopicEvent e){
+      util.msg("<blue>IRC| topic changed to "+e.getTopic());
    }
 
 

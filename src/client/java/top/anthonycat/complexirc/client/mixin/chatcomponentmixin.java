@@ -39,38 +39,40 @@ public abstract class chatcomponentmixin {
          }
       }
 
-      if (ComplexircClient.CONFIG.fixtimestamps){
-         return;
-      }
+//      if (ComplexircClient.CONFIG.fixtimestamps){
+//         return;
+//      }
 
+//      return;
 
-      GuiMessage message = new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(), contents, signature, source, tag);
-
-      this.logChatMessage(message);
-      this.addMessageToQueue(message);
-      if (ComplexircClient.currentchannel==ComplexircClient.channel.irc){
-         if (message.content().getString().startsWith("IRC | ")||message.source()!=GuiMessageSource.PLAYER){
-            this.addMessageToDisplayQueue(message);
-         }
-
-      }
-
-      if (ComplexircClient.currentchannel==ComplexircClient.channel.global){
-        this.addMessageToDisplayQueue(message);
-      }
-
-      if (ComplexircClient.currentchannel==ComplexircClient.channel.normal){
-         if (!message.content().getString().startsWith("IRC | ")){
-            this.addMessageToDisplayQueue(message);
-         }
-      }
-
-
-
-
-      //refreshTrimmedMessages();
-
-      ci.cancel();
+//
+//      GuiMessage message = new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(), contents, signature, source, tag);
+//
+//      this.logChatMessage(message);
+//      this.addMessageToQueue(message);
+//      if (ComplexircClient.currentchannel==ComplexircClient.channel.irc){
+//         if (message.content().getString().startsWith("IRC | ")||message.source()!=GuiMessageSource.PLAYER){
+//            this.addMessageToDisplayQueue(message);
+//         }
+//
+//      }
+//
+//      if (ComplexircClient.currentchannel==ComplexircClient.channel.global){
+//        this.addMessageToDisplayQueue(message);
+//      }
+//
+//      if (ComplexircClient.currentchannel==ComplexircClient.channel.normal){
+//         if (!message.content().getString().startsWith("IRC | ")){
+//            this.addMessageToDisplayQueue(message);
+//         }
+//      }
+//
+//
+//
+//
+//      //refreshTrimmedMessages();
+//
+//      ci.cancel();
 
    }
 
