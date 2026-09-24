@@ -31,8 +31,16 @@ public class listener extends ListenerAdapter {
       }
    }
 
+
+   @Override
+   public void onPrivateMessage(PrivateMessageEvent e){
+      util.msg("<blue>IRC | DM from "+e.getUser().getNick()+": "+e.getMessage());
+   }
+
+
    @Override
    public void onMode(ModeEvent e){
+
       if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
          return;
       }

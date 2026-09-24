@@ -22,8 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.anthonycat.complexirc.Complexirc;
 import top.anthonycat.complexirc.client.ComplexircClient;
-import top.anthonycat.complexirc.client.broofbutton;
-import top.anthonycat.complexirc.client.hiss;
 import top.anthonycat.complexirc.client.util;
 
 import java.awt.*;
@@ -48,10 +46,11 @@ public class chatscreenmixin extends Screen {
          util.msg("<blue>IRC | you are now talking in minecraft chat");
          ComplexircClient.talkinirc = false;
          ComplexircClient.currentchannel = ComplexircClient.channel.normal;
+         this.setFocused(this.input);
 
 
          // ((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
-      }).bounds(12, this.height - 38, 96, 20).build();
+      }).bounds(32, this.height - 38, 96, 20).build();
 
 //      Button global = Button.builder(Component.literal(ComplexircClient.currentchannel == ComplexircClient.channel.global ? ">global<" : "global"), (button) -> {
 //         util.msg("<blue>IRC | changed channel to global (both)");
@@ -89,8 +88,9 @@ public class chatscreenmixin extends Screen {
          }
 
          ComplexircClient.talkinirc = true;
+         this.setFocused(this.input);
 
-      }).bounds(220, this.height - 38, 96, 20).build();
+      }).bounds(200, this.height - 38, 96, 20).build();
 
       this.addRenderableWidget(mc);
       this.addRenderableWidget(irc);
@@ -103,6 +103,7 @@ public class chatscreenmixin extends Screen {
       if (ComplexircClient.talkinirc) {
          graphics.fill(2, this.height - 14, this.width - 2, this.height - 2, 0x703D8EFF);
       }
+
 
    }
 

@@ -66,6 +66,7 @@ dependencies {
 //	annotationProcessor implementation("io.wispforest:owo-lib:${project.owo_version}")
 
 	api "com.terraformersmc:modmenu:21.0.0"
+	implementation("com.terraformersmc:modmenu:21.0.0")
 
 	//modImplementation 'net.kyori:adventure-text-minimessage:5.2.0'
 	implementation include("net.kyori:adventure-platform-fabric:7.2.0")

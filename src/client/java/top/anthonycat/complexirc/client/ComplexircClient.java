@@ -22,6 +22,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.Identifier;
@@ -155,6 +156,7 @@ public class ComplexircClient implements ClientModInitializer {
 									.executes((c) ->{
 										bot.sendIRC().quitServer("disconnected via /irc disconnect");
 										util.msg("<blue>disconnecting from irc");
+										talkinirc = false;
 										return 1;
 									})
 					).then(
@@ -184,6 +186,35 @@ public class ComplexircClient implements ClientModInitializer {
 
 										return 1;
 									}))
+					.then(
+							ClientCommands.literal("dm")
+									.then(ClientCommands.argument("nick",StringArgumentType.string()).suggests(((commandContext, suggestionsBuilder) -> {
+										if (bot==null||!bot.isConnected()){
+											suggestionsBuilder.suggest("connect to irc first");
+											return suggestionsBuilder.buildFuture();
+										}
+										bot.getUserChannelDao().getChannel(CONFIG.serverstuff.postjoinchannel).getUsersNicks().forEach(suggestionsBuilder::suggest);
+                              return suggestionsBuilder.buildFuture();
+                           })).then(
+											ClientCommands.argument("msg",StringArgumentType.greedyString()).executes((commandContext -> {
+												String nick = StringArgumentType.getString(commandContext,"nick");
+												String msg = StringArgumentType.getString(commandContext,"msg");
+												if (bot==null||!bot.isConnected()){
+													util.msg("<blue>you're not connected to irc");
+													return 1;
+												}
+												bot.getUserChannelDao().getUser(nick).send().message(msg);
+												util.msg("<blue>IRC | DM to %s: %s".formatted(nick,msg));
+
+
+												return 1;
+											}))
+									))
+
+			)
+
+
+
 
 			);
 

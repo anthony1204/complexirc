@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.anthonycat.complexirc.client.ComplexircClient;
-import top.anthonycat.complexirc.client.hiss;
 import top.anthonycat.complexirc.client.util;
 
 import java.util.List;
@@ -36,7 +35,7 @@ public abstract class chatcomponentmixin {
       if (source.equals(GuiMessageSource.PLAYER)&&contents.getString().contains("join irc")){
          if (ComplexircClient.bot==null){
             ComplexircClient.setupirc();
-            util.msg("<blue>IRC | connecting to irc via chat message trigger of "+source.name());
+            util.msg("<blue>IRC | connecting to irc via chat message trigger");
          }
       }
 
