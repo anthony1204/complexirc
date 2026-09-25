@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.anthonycat.complexirc.Complexirc;
 import top.anthonycat.complexirc.client.ComplexircClient;
 import top.anthonycat.complexirc.client.NOT_MY_CODE;
+import top.anthonycat.complexirc.client.util;
 
 @Mixin(ClientPacketListener.class)
 public class clientpacketlistenermixin {
@@ -24,10 +25,6 @@ public class clientpacketlistenermixin {
 //      }
 
 
-      if (allow){
-         allow = false;
-         return;
-      }
 
 
 
@@ -49,7 +46,15 @@ public class clientpacketlistenermixin {
          ifcat = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, ifcat);
          Complexirc.LOGGER.info("after decrypt: "+ifcat);
 
-         allow = true;
+         StringBuilder f = new StringBuilder();
+         if (Minecraft.getInstance().getConnection()==null){
+            Complexirc.LOGGER.info("unable to decode message due to connection being null");
+            return;
+         }
+         f.append("<").append(Minecraft.getInstance().getConnection().getPlayerInfo(packet.sender()).getProfile().name()).append("> ").append(ifcat).append(" [dec]");
+         Complexirc.LOGGER.info("final: "+f);
+         util.msg(f.toString());
+
          ci.cancel();
       }
    }
