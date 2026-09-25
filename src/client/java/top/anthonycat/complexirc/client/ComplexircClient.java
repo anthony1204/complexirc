@@ -44,7 +44,7 @@ public class ComplexircClient implements ClientModInitializer {
 
 	private final int green = new Color(0,255,0).getRGB();
 
-	public KeyMapping mcirc = new KeyMapping("switch", InputConstants.Type.KEYBOARD, InputConstants.KEY_MINUS,KeyMapping.Category.register(Identifier.fromNamespaceAndPath("complexirc","keybinds")));
+	public KeyMapping mcirc = new KeyMapping("switch", InputConstants.Type.KEYSYM, InputConstants.KEY_MINUS,KeyMapping.Category.register(Identifier.fromNamespaceAndPath("complexirc","keybinds")));
 
 
 //	public static List<GuiMessage> mcmsg = new ArrayList<>();

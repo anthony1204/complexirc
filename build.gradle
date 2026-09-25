@@ -58,18 +58,18 @@ dependencies {
 
 	include(implementation 'com.github.pircbotx:pircbotx:2.3.1')
 
-	api("me.shedaniel.cloth:cloth-config-fabric:26.3.159") {
+	api("me.shedaniel.cloth:cloth-config-fabric:26.2.155") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
 	//implementation "io.wispforest:owo-lib:${project.owo_version}"
 //	annotationProcessor implementation("io.wispforest:owo-lib:${project.owo_version}")
 
-	api "com.terraformersmc:modmenu:21.0.0"
-	implementation("com.terraformersmc:modmenu:21.0.0")
+	api "com.terraformersmc:modmenu:20.0.1"
+	implementation("com.terraformersmc:modmenu:20.0.1")
 
 	//modImplementation 'net.kyori:adventure-text-minimessage:5.2.0'
-	implementation include("net.kyori:adventure-platform-fabric:7.2.0")
+	implementation include("net.kyori:adventure-platform-fabric:7.1.0")
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.5.5")))
 }
 //	modCompileOnly("net.kyori:adventure-platform-mod-shared-fabric-repack:6.8.0")
