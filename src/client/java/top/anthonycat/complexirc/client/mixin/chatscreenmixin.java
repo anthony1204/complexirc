@@ -51,7 +51,7 @@ public class chatscreenmixin extends Screen {
          ComplexircClient.talkinirc = false;
          ComplexircClient.currentchannel = ComplexircClient.channel.normal;
          cs.onClose();
-         Minecraft.getInstance().gui.setScreen(new ChatScreen("", false));
+         Minecraft.getInstance().setScreen(new ChatScreen("", false));
        //  this.setFocused(this.input);
 
 
@@ -64,7 +64,7 @@ public class chatscreenmixin extends Screen {
 
 //         this.init();
                  cs.onClose();
-                 Minecraft.getInstance().gui.setScreen(new ChatScreen("", false));
+                 Minecraft.getInstance().setScreen(new ChatScreen("", false));
        //  this.setFocused(this.input);
 
 
@@ -113,7 +113,7 @@ public class chatscreenmixin extends Screen {
 //         this.init();
 
          cs.onClose();
-         Minecraft.getInstance().gui.setScreen(new ChatScreen("", false));
+         Minecraft.getInstance().setScreen(new ChatScreen("", false));
 //         this.setFocused(this.input);
        //  this.setFocused(false);
          //this.setFocused(this.input);
