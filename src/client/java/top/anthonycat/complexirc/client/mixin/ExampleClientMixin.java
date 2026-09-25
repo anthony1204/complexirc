@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.anthonycat.complexirc.client.ComplexircClient;
+import top.anthonycat.complexirc.client.NOT_MY_CODE;
 import top.anthonycat.complexirc.client.util;
 
 @Mixin(ClientPacketListener.class)
@@ -26,6 +27,21 @@ public class ExampleClientMixin {
 			allow = false;
 			return;
 		}
+
+		if (ComplexircClient.cat&&!ComplexircClient.talkinirc){
+			info.cancel();
+			String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
+			if (neww.length()>=256){
+				util.msg("<blue>C.A.T | encrypted message too long, will get you kicked");
+				return;
+			}
+			allow = true;
+			Minecraft.getInstance().getConnection().sendChat(neww);
+			return;
+		}
+
+
+
 		if (content.equals("!")){
 			util.msg("<blue>IRC | you are now talking in minecraft chat");
 			ComplexircClient.talkinirc = false;
@@ -63,9 +79,19 @@ public class ExampleClientMixin {
 //					aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
 			//((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
 
-			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel,content);
-			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(),content));
+
+
+			if (ComplexircClient.cat) {
+				String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
+				ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel, ">w< "+neww);
+				util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), ">w< "+content+" [enc]"));
+
+			}else {
+				ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel, content);
+				util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content));
+			}
 			return;
+
 		}
 
 
@@ -84,6 +110,10 @@ public class ExampleClientMixin {
 			ComplexircClient.setupirc();
 			return;
 		}
+
+
+
+
 //
 //		Component aug;
 //
@@ -95,8 +125,17 @@ public class ExampleClientMixin {
 //		((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
 
 
-		ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel,content);
-		util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(),content));
+
+		if (ComplexircClient.cat) {
+			String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
+			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel, ">w< "+neww);
+			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), ">w< "+content+" [enc]"));
+
+		}else {
+			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel, content);
+			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content));
+		}
+
 		info.cancel();
 	}
 }

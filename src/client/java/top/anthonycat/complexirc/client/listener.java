@@ -9,6 +9,7 @@ import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.client.multiplayer.chat.GuiMessageSource;
 import net.minecraft.client.multiplayer.chat.GuiMessageTag;
 import net.minecraft.network.chat.Component;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
 import top.anthonycat.complexirc.Complexirc;
@@ -40,7 +41,8 @@ public class listener extends ListenerAdapter {
 
    @Override
    public void onTopic(TopicEvent e){
-      util.msg("<blue>IRC| topic changed to "+e.getTopic());
+      util.msg("<blue>IRC | topic changed to "+e.getTopic());
+
 
    }
 
@@ -63,10 +65,7 @@ public class listener extends ListenerAdapter {
 
    @Override
    public void onDisconnect(DisconnectEvent e){
-      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
-         return;
-      }
-      util.msg("<red>IRC | disconnected from irc server; reason: "+e.getDisconnectException().toString());
+      util.msg("<red>IRC | disconnected from irc server; reason: "+e.getDisconnectException().getMessage());
    }
 
 
@@ -144,7 +143,18 @@ public class listener extends ListenerAdapter {
 //      if (ComplexircClient.currentchannel== ComplexircClient.channel.irc||ComplexircClient.currentchannel== ComplexircClient.channel.global) {
 //         util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
 //      }
-      util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
+
+      String ifcat = e.getMessage().contains(">w< ") ? e.getMessage().substring(e.getMessage().indexOf(">w< ") + 4):e.getMessage();
+
+      if (ifcat!=e.getMessage()){
+         Complexirc.LOGGER.info("before decrypt: "+ifcat);
+         ifcat = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, ifcat);
+         Complexirc.LOGGER.info("after decrypt: "+ifcat);
+      }
+
+
+
+      util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), ifcat));
 //      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)) {
 //         util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
 //

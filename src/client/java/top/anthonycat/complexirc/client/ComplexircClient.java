@@ -93,7 +93,12 @@ public class ComplexircClient implements ClientModInitializer {
 		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register((e) -> {
-			bot.sendIRC().quitServer("exiting game");
+			if (bot!=null&&bot.isConnected()&&ircthread!=null&&ircthread.isAlive()) {
+				bot.sendIRC().quitServer("exiting game");
+
+            try {ircthread.join(1010);} catch (InterruptedException ex) {}
+				ircthread.interrupt();
+         }
 		});
 
 //		HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,Identifier.fromNamespaceAndPath("complexirc","hud"),(graphics, deltaTracker) -> {
@@ -128,13 +133,14 @@ public class ComplexircClient implements ClientModInitializer {
 					).then(
 							ClientCommands.literal("disconnect")
 									.executes((c) ->{
+										bot.stopBotReconnect();
 										bot.sendIRC().quitServer("disconnected via /irc disconnect");
 										util.msg("<blue>disconnecting from irc");
 										talkinirc = false;
 										return 1;
 									})
 					).then(
-							ClientCommands.literal("config")
+							ClientCommands.literal("openconfig")
 									.executes((c) ->{
 										util.msg("<blue>probably™ opened config");
 
@@ -152,24 +158,34 @@ public class ComplexircClient implements ClientModInitializer {
 									.executes((c) ->{
 										StringBuilder names = new StringBuilder("users in ");
 										names.append(CONFIG.serverstuff.postjoinchannel).append(": ");
-										ComplexircClient.bot.getUserChannelDao().getChannel(CONFIG.serverstuff.postjoinchannel).getUsers().forEach((u) -> {
-											String n = "["+u.getNick()+" ("+u.getRealName()+")]";
-											names.append(n);
-										});
+
+										names.append(String.join(", ", bot.getUserChannelDao().getChannel(CONFIG.serverstuff.postjoinchannel).getUsersNicks()));
+
 										util.msg("<blue>IRC | "+names);
 
 										return 1;
 									}))
-					.then(
+
+
+
+
+
+
+
+			);
+
+
+			dispatcher.register(
 							ClientCommands.literal("dm")
-									.then(ClientCommands.argument("nick",StringArgumentType.string()).suggests(((commandContext, suggestionsBuilder) -> {
+									.then(ClientCommands.argument("nick",StringArgumentType.word()).suggests(((commandContext, suggestionsBuilder) -> {
 										if (bot==null||!bot.isConnected()){
 											suggestionsBuilder.suggest("connect to irc first");
 											return suggestionsBuilder.buildFuture();
 										}
 										bot.getUserChannelDao().getChannel(CONFIG.serverstuff.postjoinchannel).getUsersNicks().forEach(suggestionsBuilder::suggest);
-                              return suggestionsBuilder.buildFuture();
-                           })).then(
+
+										return suggestionsBuilder.buildFuture();
+									})).then(
 											ClientCommands.argument("msg",StringArgumentType.greedyString()).executes((commandContext -> {
 												String nick = StringArgumentType.getString(commandContext,"nick");
 												String msg = StringArgumentType.getString(commandContext,"msg");
@@ -183,15 +199,7 @@ public class ComplexircClient implements ClientModInitializer {
 
 												return 1;
 											}))
-									))
-
-			)
-
-
-
-
-			);
-
+									)));
 
 
 		}));

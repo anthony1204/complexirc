@@ -43,27 +43,31 @@ public class chatscreenmixin extends Screen {
    private void ichatthingpls(CallbackInfo ci) {
       ChatScreen cs = (ChatScreen) (Object) this;
 
+
+      //how hard is it to space 3 buttons equally
+      //yes.
+
       Button mc = Button.builder(Component.literal(ComplexircClient.talkinirc ? "minecraft" : ">minecraft<"), (button) -> {
          util.msg("<blue>IRC | you are now talking in minecraft chat");
          ComplexircClient.talkinirc = false;
          ComplexircClient.currentchannel = ComplexircClient.channel.normal;
-         this.setFocused(false);
-         this.setFocused(this.input);
+         this.init();
+       //  this.setFocused(this.input);
 
 
          // ((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
-      }).bounds(32, this.height - 38, 96, 20).build();
+      }).bounds(12, this.height - 38, 96, 20).build();
 
       Button cat = Button.builder(Component.literal(ComplexircClient.cat ? ">cat<" : "cat"), (button) -> {
-         util.msg("<blue>IRC | you are now talking in minecraft chat");
-         ComplexircClient.talkinirc = false;
-         ComplexircClient.currentchannel = ComplexircClient.channel.normal;
-         this.setFocused(false);
-         this.setFocused(this.input);
+         ComplexircClient.cat = !ComplexircClient.cat;
+         util.msg("<blue>IRC | "+(ComplexircClient.cat ? "messages you send are now encrypted in cat":"no longer encrypting"));
+
+         this.init();
+       //  this.setFocused(this.input);
 
 
          // ((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
-      }).bounds(57, this.height - 38, 66, 20)
+      }).bounds(116, this.height - 38, 96, 20)
               .tooltip(Tooltip.create(Component.literal("encrypts your message into meows (code by vortextraveler)")))
               .build();
 
@@ -104,10 +108,11 @@ public class chatscreenmixin extends Screen {
          }
 
          ComplexircClient.talkinirc = true;
-         this.setFocused(false);
-         this.setFocused(this.input);
+         this.init();
+       //  this.setFocused(false);
+         //this.setFocused(this.input);
 
-      }).bounds(200, this.height - 38, 96, 20).build();
+      }).bounds(220, this.height - 38, 96, 20).build();
 
       this.addRenderableWidget(mc);
       this.addRenderableWidget(irc);
