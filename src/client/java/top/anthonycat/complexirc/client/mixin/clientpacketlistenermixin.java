@@ -51,13 +51,15 @@ public class clientpacketlistenermixin {
          ifcat = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, ifcat);
          Complexirc.LOGGER.info("after decrypt: " + ifcat);
 
-         StringBuilder f = new StringBuilder();
+         ifcat = ifcat + " [dec]";
+
+         //StringBuilder f = new StringBuilder();
          if (Minecraft.getInstance().getConnection() == null) {
             Complexirc.LOGGER.info("unable to decode message due to connection being null");
             return;
          }
-         f.append("<").append(Minecraft.getInstance().getConnection().getPlayerInfo(packet.sender()).getProfile().name()).append("> ").append(ifcat).append(" [dec]");
-         Complexirc.LOGGER.info("final: " + f);
+        // f.append("<").append(Minecraft.getInstance().getConnection().getPlayerInfo(packet.sender()).getProfile().name()).append("> ").append(ifcat).append(" [dec]");
+        // Complexirc.LOGGER.info("final: " + f);
 //         util.msg(f.toString());
 
          //new ClientboundPlayerChatPacket(packet.globalIndex(),packet.sender(),packet.index(),packet.signature(),new SignedMessageBody.Packed(ifcat,packet.body().timeStamp(),packet.body().salt(),packet.body().lastSeen()), Component.literal(ifcat),packet.filterMask(),packet.chatType());
