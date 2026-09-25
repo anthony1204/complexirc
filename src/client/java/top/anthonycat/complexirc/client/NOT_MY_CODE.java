@@ -155,7 +155,7 @@ public class NOT_MY_CODE {
            "meoww", "mrrw", "mrrow", "meoooww", "meew", "miiooww", "mrreow", "mrow",
            "mroew", "mieow", "mrieow", "mrrrp", "miowww", "mrreoowww", ":3c", ":3"
    };
-   private static final int BITS = 5; // 32 sounds = 5 bits each
+   private static final int BITS = 5;
    private static final Map<String, Integer> SOUND_INDEX = new HashMap<>();
    static {
       for (int i = 0; i < SOUNDS.length; i++) SOUND_INDEX.put(SOUNDS[i], i);
@@ -177,17 +177,20 @@ public class NOT_MY_CODE {
    }
 
    public static String decrypt(String key, String catText) {
-      byte[] in = fromCatSounds(catText);
+      try {
+         byte[] in = fromCatSounds(catText);
 //      if (in.length < NONCE_LEN) throw new IllegalArgumentException("Not enough meows");
 
-      byte[] nonce = new byte[NONCE_LEN];
-      System.arraycopy(in, 0, nonce, 0, NONCE_LEN);
-      byte[] cipher = new byte[in.length - NONCE_LEN];
-      System.arraycopy(in, NONCE_LEN, cipher, 0, cipher.length);
-      return new String(xorWithKeystream(key, nonce, cipher), StandardCharsets.UTF_8);
+         byte[] nonce = new byte[NONCE_LEN];
+         System.arraycopy(in, 0, nonce, 0, NONCE_LEN);
+         byte[] cipher = new byte[in.length - NONCE_LEN];
+         System.arraycopy(in, NONCE_LEN, cipher, 0, cipher.length);
+         return new String(xorWithKeystream(key, nonce, cipher), StandardCharsets.UTF_8);
+      } catch (Exception e) {
+         return "failed to decode, original: "+catText;
+      }
    }
 
-   // XOR is its own inverse, so this both encrypts and decrypts.
    private static byte[] xorWithKeystream(String key, byte[] nonce, byte[] data) {
       MessageDigest sha;
       try {
@@ -227,7 +230,7 @@ public class NOT_MY_CODE {
             appendSound(sb, (buffer >> bits) & 31);
          }
       }
-      if (bits > 0) appendSound(sb, (buffer << (BITS - bits)) & 31); // pad last sound with zeros
+      //if (bits > 0) appendSound(sb, (buffer << (BITS - bits)) & 31); // pad last sound with zeros
       return sb.toString();
    }
 
