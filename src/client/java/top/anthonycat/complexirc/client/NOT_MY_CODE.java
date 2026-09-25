@@ -178,7 +178,7 @@ public class NOT_MY_CODE {
 
    public static String decrypt(String key, String catText) {
       byte[] in = fromCatSounds(catText);
-      if (in.length < NONCE_LEN) throw new IllegalArgumentException("Not enough meows");
+//      if (in.length < NONCE_LEN) throw new IllegalArgumentException("Not enough meows");
 
       byte[] nonce = new byte[NONCE_LEN];
       System.arraycopy(in, 0, nonce, 0, NONCE_LEN);
@@ -256,7 +256,7 @@ public class NOT_MY_CODE {
 
    private static int soundValue(String word) {
       Integer v = SOUND_INDEX.get(word.toLowerCase());
-      if (v == null) throw new IllegalArgumentException("Unknown cat sound: " + word);
+      if (v == null) return 1;
       return v;
    }
 }

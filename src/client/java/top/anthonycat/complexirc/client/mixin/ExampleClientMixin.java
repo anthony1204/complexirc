@@ -37,7 +37,7 @@ public class ExampleClientMixin {
 			}
 			allow = true;
 			if (ComplexircClient.cat) util.msg("<blue>you: "+content+" [dec]");
-			Minecraft.getInstance().getConnection().sendChat(">w<"+neww);
+			Minecraft.getInstance().getConnection().sendChat(">w< "+neww);
 			return;
 		}
 
