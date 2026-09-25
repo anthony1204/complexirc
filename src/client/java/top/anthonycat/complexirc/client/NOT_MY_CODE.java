@@ -187,7 +187,7 @@ public class NOT_MY_CODE {
          System.arraycopy(in, NONCE_LEN, cipher, 0, cipher.length);
          return new String(xorWithKeystream(key, nonce, cipher), StandardCharsets.UTF_8);
       } catch (Exception e) {
-         return "failed to decode, original: "+catText;
+         return "failedtodecode";
       }
    }
 

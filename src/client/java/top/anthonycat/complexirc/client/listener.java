@@ -153,6 +153,7 @@ public class listener extends ListenerAdapter {
          } catch (Exception _) {}
          Complexirc.LOGGER.info("after decrypt: "+ifcat);
          ifcat = ifcat + " [dec]";
+         if (ifcat.contains("failedtodecode")) ifcat = e.getMessage() + " [failed to decode]";
       }
 
 

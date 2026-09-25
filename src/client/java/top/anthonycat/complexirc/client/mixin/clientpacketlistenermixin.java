@@ -63,6 +63,7 @@ public class clientpacketlistenermixin {
 //         util.msg(f.toString());
 
          //new ClientboundPlayerChatPacket(packet.globalIndex(),packet.sender(),packet.index(),packet.signature(),new SignedMessageBody.Packed(ifcat,packet.body().timeStamp(),packet.body().salt(),packet.body().lastSeen()), Component.literal(ifcat),packet.filterMask(),packet.chatType());
+       if (ifcat.contains("failedtodecode")) return;
        allow = true;
        ci.cancel();
         Minecraft.getInstance().getConnection().handlePlayerChat(new ClientboundPlayerChatPacket(packet.globalIndex(), packet.sender(), packet.index(), packet.signature(), new SignedMessageBody.Packed(ifcat, packet.body().timeStamp(), packet.body().salt(), packet.body().lastSeen()), Component.literal(ifcat), packet.filterMask(), packet.chatType()));
