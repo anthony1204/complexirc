@@ -64,6 +64,8 @@ public class ComplexircClient implements ClientModInitializer {
 	public static MiniMessage mm = MiniMessage.miniMessage();
 	public static Boolean talkinirc = false;
 	public static channel currentchannel = channel.global;
+
+	public static boolean cat = false;
 			 //Create an immutable configuration from this builder
 
 
@@ -110,34 +112,6 @@ public class ComplexircClient implements ClientModInitializer {
 
 										return 1;
 									})
-					).then(
-							ClientCommands.literal("list")
-									.then(
-											ClientCommands.argument("channel", StringArgumentType.greedyString())
-													.suggests((ctx,builder) -> {
-														if (ComplexircClient.bot == null || !ComplexircClient.bot.isConnected()) {
-															builder.suggest("use /irc connect first");
-															return builder.buildFuture();
-														}
-														List<String> channels = bot.getUserChannelDao().getAllChannels().stream().map(Channel::getName).toList();
-
-
-
-														return SharedSuggestionProvider.suggest(channels,builder);
-
-													})
-													.executes((ctx) -> {
-														String channel = StringArgumentType.getString(ctx,"channel");
-														List<String> users = bot.getUserChannelDao().getChannel(channel).getUsersNicks().stream().toList();
-
-														StringBuilder respons = new StringBuilder("<blue>users in "+channel+": ");
-														String response = "users in "+channel+": "+String.join(", ", users);
-														util.msg(response);
-
-
-														return 1;
-													})
-									)
 					).then(
 							ClientCommands.literal("raw")
 									.then(

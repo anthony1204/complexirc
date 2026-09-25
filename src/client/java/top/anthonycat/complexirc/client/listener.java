@@ -41,6 +41,7 @@ public class listener extends ListenerAdapter {
    @Override
    public void onTopic(TopicEvent e){
       util.msg("<blue>IRC| topic changed to "+e.getTopic());
+
    }
 
 
@@ -100,6 +101,12 @@ public class listener extends ListenerAdapter {
       }
       util.msg("<blue>IRC | %s (%s) was kicked by %s".formatted(e.getRecipient().getNick(),e.getRecipient().getRealName(),e.getUser().getNick()));
    }
+
+   @Override
+   public void onNotice(NoticeEvent e){
+      util.msg("<blue>IRC | Notice: "+e.getNotice());
+   }
+
 
    @Override
    public void onPart(PartEvent e){
