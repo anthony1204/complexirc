@@ -36,6 +36,7 @@ public class ExampleClientMixin {
 				return;
 			}
 			allow = true;
+			if (ComplexircClient.cat) util.msg("<blue>you: "+content+" [dec]");
 			Minecraft.getInstance().getConnection().sendChat(neww);
 			return;
 		}
@@ -56,9 +57,22 @@ public class ExampleClientMixin {
 		}
 		if (content.startsWith("!")){
 			content = content.substring(1);
+//			info.cancel();
+//			allow = true;
+//			Minecraft.getInstance().getConnection().sendChat(content);
 			info.cancel();
+			String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
+			if (neww.length()>=256){
+				util.msg("<blue>C.A.T | encrypted message too long, will get you kicked");
+				return;
+			}
+			if (!ComplexircClient.cat) neww = content;
+
 			allow = true;
-			Minecraft.getInstance().getConnection().sendChat(content);
+
+			if (ComplexircClient.cat) util.msg("<blue>you: "+content+" [dec]");
+			Minecraft.getInstance().getConnection().sendChat(neww);
+
 			return;
 		}
 		if (content.startsWith("#")){
@@ -129,7 +143,7 @@ public class ExampleClientMixin {
 		if (ComplexircClient.cat) {
 			String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
 			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel, ">w< "+neww);
-			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), ">w< "+content+" [enc]"));
+			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content+" [enc]"));
 
 		}else {
 			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel, content);

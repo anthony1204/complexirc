@@ -51,7 +51,8 @@ public class chatscreenmixin extends Screen {
          util.msg("<blue>IRC | you are now talking in minecraft chat");
          ComplexircClient.talkinirc = false;
          ComplexircClient.currentchannel = ComplexircClient.channel.normal;
-         this.init();
+         cs.onClose();
+         Minecraft.getInstance().gui.setScreen(new ChatScreen("", false));
        //  this.setFocused(this.input);
 
 
@@ -62,7 +63,9 @@ public class chatscreenmixin extends Screen {
          ComplexircClient.cat = !ComplexircClient.cat;
          util.msg("<blue>IRC | "+(ComplexircClient.cat ? "messages you send are now encrypted in cat":"no longer encrypting"));
 
-         this.init();
+//         this.init();
+                 cs.onClose();
+                 Minecraft.getInstance().gui.setScreen(new ChatScreen("", false));
        //  this.setFocused(this.input);
 
 
@@ -108,7 +111,11 @@ public class chatscreenmixin extends Screen {
          }
 
          ComplexircClient.talkinirc = true;
-         this.init();
+//         this.init();
+
+         cs.onClose();
+         Minecraft.getInstance().gui.setScreen(new ChatScreen("", false));
+//         this.setFocused(this.input);
        //  this.setFocused(false);
          //this.setFocused(this.input);
 

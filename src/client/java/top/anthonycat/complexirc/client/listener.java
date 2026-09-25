@@ -148,8 +148,11 @@ public class listener extends ListenerAdapter {
 
       if (ifcat!=e.getMessage()){
          Complexirc.LOGGER.info("before decrypt: "+ifcat);
-         ifcat = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, ifcat);
+         try {
+            ifcat = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, ifcat);
+         } catch (Exception _) {}
          Complexirc.LOGGER.info("after decrypt: "+ifcat);
+         ifcat = ifcat + " [dec]";
       }
 
 
