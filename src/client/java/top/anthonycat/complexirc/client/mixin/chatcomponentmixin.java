@@ -32,11 +32,9 @@ public abstract class chatcomponentmixin {
    @Inject(method = "addMessage", at = @At("HEAD"), cancellable = true)
    private void addMessage(final Component contents, final @Nullable MessageSignature signature, final GuiMessageSource source, final @Nullable GuiMessageTag tag,CallbackInfo ci) {
 
-      if (source.equals(GuiMessageSource.PLAYER)&&contents.getString().contains("join irc")){
-         if (ComplexircClient.bot==null){
-            ComplexircClient.setupirc();
-            util.msg("<blue>IRC | connecting to irc via chat message trigger");
-         }
+      if ((source.equals(GuiMessageSource.PLAYER) && contents.getString().contains("join irc")) && ComplexircClient.CONFIG.preferencesConfig.forcejoin && ComplexircClient.bot == null) {
+         ComplexircClient.setupirc();
+         util.msg("<yellow>IRC | <gray><lang:text.chat.complexirc.force_connect>");
       }
 
 //      if (ComplexircClient.CONFIG.fixtimestamps){

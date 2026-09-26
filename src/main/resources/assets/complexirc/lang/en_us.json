@@ -1,11 +1,49 @@
 {
-  "text.autoconfig.complexirc.option.serverstuff": "server connection details",
-  "text.autoconfig.complexirc.option.serverstuff.serverip": "ip",
-  "text.autoconfig.complexirc.option.serverstuff.port": "port",
-  "text.autoconfig.complexirc.option.serverstuff.username": "username to join with",
-  "text.autoconfig.complexirc.option.serverstuff.postjoinchannel": "channel to join after connecting",
-  "text.autoconfig.complexirc.option.serverstuff.channelpass": "channel password (leave empty if none)",
-  "text.autoconfig.complexirc.option.postcommand": "post join commands",
+  "text.key.category.complexirc.keybinds": "Complex IRC",
+  "text.key.complexirc.toggle": "Toggle IRC/Minecraft Chat",
+
+  "text.autoconfig.complexirc.title": "Complex IRC Config",
+  
+  "text.autoconfig.complexirc.option.serverConfig": "Server Configuration",
+  "text.autoconfig.complexirc.option.serverConfig.serverip": "IRC server IP",
+  "text.autoconfig.complexirc.option.serverConfig.port": "IRC server port",
+  "text.autoconfig.complexirc.option.serverConfig.username": "username to use when connecting",
+  "text.autoconfig.complexirc.option.serverConfig.postjoinchannel": "channel to auto join after connecting",
+  "text.autoconfig.complexirc.option.serverConfig.channelpass": "channel password (leave empty if none)",
+  "text.autoconfig.complexirc.option.serverConfig.autojoin": "auto join channel after connecting",
+  "text.autoconfig.complexirc.option.serverConfig.autoreconnect": "auto reconnect to server if disconnected unexpectedly",
+
+  "text.autoconfig.complexirc.option.colorConfig": "IRC Color Config",
+  "text.autoconfig.complexirc.option.colorConfig.ircChatColor": "IRC chat color",
+  "text.autoconfig.complexirc.option.colorConfig.ircChatOpacity": "IRC chat opacity",
+
+  "text.autoconfig.complexirc.option.preferencesConfig": "Preferences",
+  "text.autoconfig.complexirc.option.preferencesConfig.sendnotice": "Send Notices in chat (may be spammy, but useful for debugging)",
+  "text.autoconfig.complexirc.option.preferencesConfig.forcejoin": "Toggle force join message (currently it's hardcoded to \"joinirc\")",
+
+  "text.autoconfig.complexirc.option.postcommand": "Post-Join Commands",
   "text.autoconfig.complexirc.option.meowkey": "meow-cipher/message encryptor key to encrypt with",
-  "text.autoconfig.complexirc.option.fixtimestamps": "fix timestamps + every other chat-related mod's functions (breaks chat channels a bit)"
+  "text.autoconfig.complexirc.option.fixtimestamps": "fix timestamps + every other chat-related mod's functions (breaks chat channels a bit)",
+
+  "text.chat.complexirc.irc": "IRC",
+  "text.chat.complexirc.connecting": "Connecting to IRC server...",
+  "text.chat.complexirc.connected": "Connected to IRC server:",
+  "text.chat.complexirc.on_connect": "Connected to IRC server.",
+  "text.chat.complexirc.on_disconnect": "Disconnected from IRC server.",
+  "text.chat.complexirc.on_connect_error": "Error connecting to IRC server:",
+  "text.chat.complexirc.force_connect": "Force-Connecting to IRC via chat message trigger.",
+  "text.chat.complexirc.switching_to": "Switching to",
+  "text.chat.complexirc.chat": "chat.",
+  "text.chat.complexirc.not_connected": "You are not connected to a IRC server.",
+  "text.chat.complexirc.not_connected_force": "You are not connected to a IRC server, connecting now.",
+  "text.chat.complexirc.channel_topic": "Channel Topic:",
+  "text.chat.complexirc.already_connected": "You are already connected to a IRC server.",
+  "text.chat.complexirc.wrong_channel": "Could not connect to requested channel, please check your config file for the correct channel name. Quitting...",
+  "text.chat.complexirc.joined_channel": "+%s (%s) joined %s channel.",
+  "text.chat.complexirc.left_channel": "-%s (%s) left %s channel.",
+  "text.chat.complexirc.kicked_from_channel": "-%s (%s) was kicked from %s channel by %s (%s).",
+  "text.chat.complexirc.no_topic": "No topic set for this channel.",
+  "text.chat.complexirc.reconnecting": "Attempting to reconnect IRC server...",
+  "text.chat.complexirc.channel_joined": "Joined channel:"
+
 }
