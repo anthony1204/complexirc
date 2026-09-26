@@ -117,11 +117,14 @@ public class chatscreenmixin extends Screen {
    }
 
    //Fixed button labels not updating when switching between chat screens.
+   //broof with adding comments
    @Unique
    private void complexirc$updateButtonLabels() {
-      complexirc$mcButton.setMessage(Component.literal(ComplexircClient.talkinirc ? " Minecraft" : ">Minecraft<"));
-      complexirc$ircButton.setMessage(Component.literal(ComplexircClient.talkinirc ? ">IRC<" : "IRC"));
-      complexirc$catButton.setMessage(Component.literal(ComplexircClient.cat ? ">Mrewcrypted<" : "Mrewcrypted"));
+//      complexirc$mcButton.setMessage(Component.literal(ComplexircClient.talkinirc ? " Minecraft" : ">Minecraft<"));
+//      complexirc$ircButton.setMessage(Component.literal(ComplexircClient.talkinirc ? ">IRC<" : "IRC"));
+//      complexirc$catButton.setMessage(Component.literal(ComplexircClient.cat ? ">Mrewcrypted<" : "Mrewcrypted"));
+      this.onClose();
+      Minecraft.getInstance().gui.setScreen(new ChatScreen("",false));
    }
 
    @Inject(method = "extractRenderState", at = @At("HEAD"))
