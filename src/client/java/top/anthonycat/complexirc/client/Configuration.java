@@ -1,11 +1,9 @@
 package top.anthonycat.complexirc.client;
 
-
-
-
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.math.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +12,12 @@ import java.util.List;
 public class Configuration implements ConfigData {
 
    @ConfigEntry.Gui.CollapsibleObject
-   public server serverstuff = new server();
+   public server serverConfig = new server();
+   @ConfigEntry.Gui.CollapsibleObject
+   public colorconfig colorConfig = new colorconfig();
+   @ConfigEntry.Gui.CollapsibleObject
+   public preferences preferencesConfig = new preferences();
+
    public static class server {
       public String serverip = "irc.anthonycat.top";
       public Integer port = 6667;
@@ -22,9 +25,19 @@ public class Configuration implements ConfigData {
       public String postjoinchannel = "#channelname";
       public String channelpass = "";
       public boolean autoreconnect = true;
+      public boolean autojoin = true;
    }
 
-//   public Boolean fixtimestamps = false; //note: chat channels got removed
+   public static class colorconfig {
+      public String ircChatColor = "#07bad1";
+      public int ircChatOpacity = 150;
+   }
+
+   public static class preferences {
+      public boolean forcejoin = true;
+      public boolean sendnotice = true;
+   }
+   //public Boolean fixtimestamps = false; //note: chat channels got removed
 
    public List<String> postcommand = new ArrayList<>();
    public String meowkey = "iNseRtSeCurESoMeThIngHerE";
