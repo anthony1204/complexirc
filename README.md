@@ -1,6 +1,13 @@
 # Complex IRC
 a mod that adds irc support into the chat, complete with chat channels.
 
+THIS IS NOT THE BRANCH UPDATES HAPPEN IN
+branches being used:
+26.1.2-new
+26.2-new
+26.3
+
+
 [modrith link](https://modrinth.com/mod/complex-irc)
 
 ### usage:
