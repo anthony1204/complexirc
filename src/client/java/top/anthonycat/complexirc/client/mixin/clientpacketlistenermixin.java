@@ -3,6 +3,7 @@ package top.anthonycat.complexirc.client.mixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MessageSignatureCache;
 import net.minecraft.network.chat.SignedMessageBody;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import org.spongepowered.asm.mixin.Mixin;
@@ -61,7 +62,11 @@ public class clientpacketlistenermixin {
          if (ifcat.contains("failedtodecode")) return;
          allow = true;
          ci.cancel();
-         Minecraft.getInstance().getConnection().handlePlayerChat(new ClientboundPlayerChatPacket(packet.globalIndex(), packet.sender(), packet.index(), packet.signature(), new SignedMessageBody.Packed(ifcat, packet.body().timeStamp(), packet.body().salt(), packet.body().lastSeen()), Component.literal(ifcat), packet.filterMask(), packet.chatType()));
+         // new SignedMessageBody.Packed(ifcat, packet.body().timeStamp(), packet.body().salt(), packet.body().lastSeen())
+         ComplexircClient.xshownextmsg = true;
+         //chat signing is very annoying to work with...
+         Minecraft.getInstance().getConnection().handlePlayerChat(new ClientboundPlayerChatPacket(packet.globalIndex(), packet.sender(), packet.index(),packet.signature(),packet.body(), packet.unsignedContent(), packet.filterMask(), packet.chatType()));
+         util.msg(Minecraft.getInstance().getConnection().getPlayerInfo(packet.sender()).getProfile().name()+": "+ifcat);
          //ci.cancel();
       }
    }

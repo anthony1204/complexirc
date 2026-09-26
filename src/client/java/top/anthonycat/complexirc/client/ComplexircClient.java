@@ -59,11 +59,14 @@ public class ComplexircClient implements ClientModInitializer {
 	public static Boolean talkinirc = false;
 	public static channel currentchannel = channel.global;
 
+	public static boolean xshownextmsg = false;
+
 	public static boolean cat = false;
 			 //Create an immutable configuration from this builder
 
 	@Override
 	public void onInitializeClient() {
+
 		AutoConfig.register(top.anthonycat.complexirc.client.Configuration.class, Toml4jConfigSerializer::new);
 		CONFIG = AutoConfig.getConfigHolder(top.anthonycat.complexirc.client.Configuration.class).getConfig();
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
