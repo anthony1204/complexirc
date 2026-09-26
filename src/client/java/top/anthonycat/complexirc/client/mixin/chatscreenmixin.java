@@ -108,7 +108,9 @@ public class chatscreenmixin extends Screen {
 
       this.addRenderableWidget(mc);
       this.addRenderableWidget(irc);
-      this.addRenderableWidget(cat);
+      if (!ComplexircClient.CONFIG.preferencesConfig.disablecat) {
+         this.addRenderableWidget(cat);
+      }
       complexirc$mcButton = mc;
       complexirc$ircButton = irc;
       complexirc$catButton = cat;

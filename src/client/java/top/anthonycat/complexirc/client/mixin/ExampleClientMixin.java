@@ -29,7 +29,14 @@ public class ExampleClientMixin {
 			return;
 		}
 
-		if (ComplexircClient.cat&&!ComplexircClient.talkinirc){
+		//kindly find a better way to update this when config is changed
+		if (ComplexircClient.CONFIG.preferencesConfig.disablecat) ComplexircClient.cat = false;
+
+
+
+		//was going to add the no cat chat thing here but its kinda useless as you cant even
+		//ignore the previous comment i had a brainwave
+		if (ComplexircClient.cat&&!ComplexircClient.talkinirc&&!ComplexircClient.CONFIG.preferencesConfig.disablecat){
 			info.cancel();
 			String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
 			if (neww.length()>=256){
@@ -68,12 +75,14 @@ public class ExampleClientMixin {
 				util.msg("<blue>C.A.T | encrypted message too long, will get you kicked");
 				return;
 			}
+			//worst code ever, fix someone submitting a pr feels like it
 			if (!ComplexircClient.cat) neww = content;
 
 			allow = true;
+			if (ComplexircClient.CONFIG.preferencesConfig.disablecat) neww = content;
 
-			if (ComplexircClient.cat) util.msg("<blue>you: "+content+" [dec]");
-			Minecraft.getInstance().getConnection().sendChat(">w< "+neww);
+			if (ComplexircClient.cat&&!ComplexircClient.CONFIG.preferencesConfig.disablecat) util.msg("<blue>you: "+content+" [dec]");
+			Minecraft.getInstance().getConnection().sendChat(ComplexircClient.cat?">w< ": neww);
 
 			return;
 		}
