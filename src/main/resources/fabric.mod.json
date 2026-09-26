@@ -12,8 +12,7 @@
 	},
 	"license": "ARR",
 	"icon": "assets/complexirc/icon.png",
-	"environment": "*",
-	"entrypoints": {
+	"environment"
 		"main": [
 			"top.anthonycat.complexirc.Complexirc"
 		],
