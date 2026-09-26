@@ -147,7 +147,7 @@ public class ComplexircClient implements ClientModInitializer {
 							util.msg("<blue>IRC | Opening config screen...");
 
 							Minecraft.getInstance().execute(() -> {
-								Screen s = AutoConfigClient.getConfigScreen(top.anthonycat.complexirc.client.Configuration.class, Minecraft.getInstance().screen).get();
+								Screen s = AutoConfigClient.getConfigScreen(top.anthonycat.complexirc.client.Configuration.class, Minecraft.getInstance().gui.screen()).get();
 								//	util.msg("aughscreen: "+s.toString());
 								Minecraft.getInstance().setScreenAndShow(s);
 
