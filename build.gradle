@@ -43,8 +43,6 @@ tasks.register("buildtomods", Copy) {
 
 }
 
-
-
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -62,11 +60,10 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
+	implementation "com.terraformersmc:modmenu:18.0.1"
+
 	//implementation "io.wispforest:owo-lib:${project.owo_version}"
 //	annotationProcessor implementation("io.wispforest:owo-lib:${project.owo_version}")
-
-//	api "com.terraformersmc:modmenu:20.0.1"
-//	implementation("com.terraformersmc:modmenu:20.0.1")
 
 	//modImplementation 'net.kyori:adventure-text-minimessage:5.2.0'
 	implementation include("net.kyori:adventure-platform-fabric:6.9.0")
