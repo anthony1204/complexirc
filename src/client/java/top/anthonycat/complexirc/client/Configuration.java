@@ -3,6 +3,7 @@ package top.anthonycat.complexirc.client;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import me.shedaniel.math.Color;
 
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ public class Configuration implements ConfigData {
    public static class preferences {
       public boolean forcejoin = true;
       public boolean sendnotice = true;
+      @Comment("for hansen, this disables everything related to cat lang encryption")
+      public boolean disablecat = false;
    }
    //public Boolean fixtimestamps = false; //note: chat channels got removed
 

@@ -31,6 +31,8 @@ public class clientpacketlistenermixin {
          return;
       }
 
+      if (ComplexircClient.CONFIG.preferencesConfig.disablecat) return;
+
       String msg = packet.body().content();
       if (msg.isEmpty()) {
          if (packet.unsignedContent() != null) {

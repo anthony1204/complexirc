@@ -19,7 +19,8 @@
 
   "text.autoconfig.complexirc.option.preferencesConfig": "Preferences",
   "text.autoconfig.complexirc.option.preferencesConfig.sendnotice": "Send Notices in chat (may be spammy, but useful for debugging)",
-  "text.autoconfig.complexirc.option.preferencesConfig.forcejoin": "Toggle force join message (currently it's hardcoded to \"joinirc\")",
+  "text.autoconfig.complexirc.option.preferencesConfig.forcejoin": "Toggle force join message (currently it's hardcoded to \"join irc\")",
+  "text.autoconfig.complexirc.option.preferencesConfig.disablecat": "disable cat language encryption/'mrewcrypted'",
 
   "text.autoconfig.complexirc.option.postcommand": "Post-Join Commands",
   "text.autoconfig.complexirc.option.meowkey": "meow-cipher/message encryptor key to encrypt with",
