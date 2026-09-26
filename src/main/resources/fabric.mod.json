@@ -12,7 +12,7 @@
 	},
 	"license": "ARR",
 	"icon": "assets/complexirc/icon.png",
-	"environment"
+	"environment": "*",
 		"main": [
 			"top.anthonycat.complexirc.Complexirc"
 		],
