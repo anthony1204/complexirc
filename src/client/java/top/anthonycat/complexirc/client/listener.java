@@ -18,34 +18,24 @@ public class listener extends ListenerAdapter {
    MiniMessage mm = MiniMessage.miniMessage();
    Audience a = MinecraftClientAudiences.of().audience();
 
-
    @Override
    public void onConnect(ConnectEvent event) {
-      Complexirc.LOGGER.info("connected to irc server");
-      ComplexircClient.talkinirc = true;
-      ComplexircClient.CONFIG.postcommand.forEach((e) -> {
-         ComplexircClient.bot.sendRaw().rawLine(e);
-         Complexirc.LOGGER.info("sending {}", e);
-      });
+      //Succesful connect
+      Complexirc.LOGGER.info("Connected to irc server");
       if (Minecraft.getInstance().player!=null){
-         MinecraftClientAudiences.of().audience().sendMessage(MiniMessage.miniMessage().deserialize("<blue>IRC | connected to irc successfully"));
+         util.msg("<green>IRC | <lang:text.chat.complexirc.connected> <gray>" + ComplexircClient.CONFIG.serverConfig.serverip + ":" + ComplexircClient.CONFIG.serverConfig.port);
       }
-      util.msg("<blue>IRC | topic: "+ComplexircClient.bot.getUserChannelDao().getChannel(ComplexircClient.CONFIG.serverstuff.postjoinchannel).getTopic());
    }
-
 
    @Override
    public void onPrivateMessage(PrivateMessageEvent e){
-      util.msg("<blue>IRC | DM from "+e.getUser().getNick()+": "+e.getMessage());
+      util.msg("<blue>IRC | <gray>DM from "+e.getUser().getNick()+": "+e.getMessage());
    }
 
    @Override
    public void onTopic(TopicEvent e){
-      util.msg("<blue>IRC | topic changed to "+e.getTopic());
-
-
+      util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.channel_topic> "+e.getTopic());
    }
-
 
    @Override
    public void onMode(ModeEvent e){
@@ -53,36 +43,54 @@ public class listener extends ListenerAdapter {
       if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
          return;
       }
-      util.msg("<blue>IRC | mode changed in %s by %s to %s".formatted(e.getChannel().getName(),e.getUser().getNick(),e.getMode()));
+      util.msg("<yellow>IRC | <gray>Mode changed in %s by %s to %s".formatted(e.getChannel().getName(),e.getUser().getNick(),e.getMode()));
    }
 
    @Override
    public void onNickChange(NickChangeEvent e){
-      util.msg("<blue>IRC | %s changed nick to %s".formatted(e.getOldNick(),e.getNewNick()));
+      util.msg("<yellow>IRC | User <gold>'%s' <blue>changed their nickname to <gold>'%s'.".formatted(e.getOldNick(),e.getNewNick()));
    }
-
-
 
    @Override
    public void onDisconnect(DisconnectEvent e){
-      util.msg("<red>IRC | disconnected from irc server; reason: "+e.getDisconnectException().getMessage());
+      util.msg("<red>IRC | <gray>Disconnected from IRC server; reason: "+e.getDisconnectException().getMessage());
    }
 
-
-   @Override
-   public void onUserMode(UserModeEvent e){
-      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
-         return;
-      }
-      util.msg("<blue>IRC | mode for "+e.getUser().getNick()+" changed to "+e.getMode());
-   }
+   //##  What is this info needed for? sk
+   // @Override
+   // public void onUserMode(UserModeEvent e){
+   //    if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
+   //       return;
+   //    }
+   //    util.msg("<yellow>IRC | <gray>Mode for "+e.getUser().getNick()+" changed to <purple>"+e.getMode());
+   // }
 
    @Override
    public void onJoin(JoinEvent e){
-      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
+      // if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
+      //    return;
+      // }
+         if (e.getUser().getNick().equalsIgnoreCase(e.getBot().getNick())) {
+            //If the user that joined is not the bot itself, print self join msg.
+            if (!e.getChannel().getName().equalsIgnoreCase(ComplexircClient.CONFIG.serverConfig.postjoinchannel)) {
+               util.msg("<red>IRC | <gray><lang:text.chat.complexirc.wrong_channel>");
+               ComplexircClient.bot.stopBotReconnect();
+               return;
+            }
+            //Successful join
+            ComplexircClient.talkinirc = true;
+            ComplexircClient.CONFIG.postcommand.forEach(command -> {
+               ComplexircClient.bot.sendRaw().rawLine(command);
+               Complexirc.LOGGER.info("sending {}", command);
+            });
+            if (Minecraft.getInstance().player!=null){
+               util.msg("<green>IRC | <gray><lang:text.chat.complexirc.channel_joined> " + e.getChannel().getName());
+            }
+         } else {
+            //If connected user is not the bot itself, print join msg.
+            util.msg("<green>IRC | +%s (%s) joined %s channel.".formatted(e.getUser().getNick(),e.getUser().getRealName(),e.getChannel().getName()));
+         }
          return;
-      }
-      util.msg("<blue>IRC | +%s (%s)".formatted(e.getUser().getNick(),e.getUser().getRealName()));
    }
 
    @Override
@@ -90,7 +98,7 @@ public class listener extends ListenerAdapter {
       if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
          return;
       }
-      util.msg("<blue>IRC | -%s (%s) | quitting".formatted(e.getUser().getNick(),e.getUser().getRealName()));
+      util.msg("<red>IRC | -%s (%s) quitting.".formatted(e.getUser().getNick(),e.getUser().getRealName()));
    }
 
    @Override
@@ -98,14 +106,14 @@ public class listener extends ListenerAdapter {
       if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
          return;
       }
-      util.msg("<blue>IRC | %s (%s) was kicked by %s".formatted(e.getRecipient().getNick(),e.getRecipient().getRealName(),e.getUser().getNick()));
+      util.msg("<red>IRC | %s (%s) was kicked by %s from the %s channel.".formatted(e.getRecipient().getNick(),e.getRecipient().getRealName(),e.getUser().getNick(),e.getChannel().getName()));
    }
 
    @Override
    public void onNotice(NoticeEvent e){
-      util.msg("<blue>IRC | Notice: "+e.getNotice());
+      if (ComplexircClient.CONFIG.preferencesConfig.sendnotice==false) return;
+      util.msg("<yellow>IRC | Notice: "+e.getNotice());
    }
-
 
    @Override
    public void onPart(PartEvent e){
@@ -120,48 +128,47 @@ public class listener extends ListenerAdapter {
       if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
          return;
       }
-      a.sendMessage(mm.deserialize("<red>IRC | irc connection failed, errors: %s".formatted(e.getConnectExceptions().toString())));
+      util.msg("<red>IRC | IRC connection failed, reason: %s".formatted(e.getConnectExceptions().toString()));
    }
-
 
    @Override
    public void onMessage(MessageEvent e){
-//      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
-//       return;
-//      }
-//
-//      Component aug;
-//
-//      aug = MinecraftClientAudiences.of().asNative(ComplexircClient.mm.deserialize("<blue>IRC | <<red>%s<reset>> %s".formatted(e.getUser().getNick(),e.getMessage())));
-//
-//
-//      ComplexircClient.ircmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(),
-//              aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
-//      ComplexircClient.globalmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(),
-//              aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
-//      ((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
-//      if (ComplexircClient.currentchannel== ComplexircClient.channel.irc||ComplexircClient.currentchannel== ComplexircClient.channel.global) {
-//         util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
-//      }
+      //##Depricated - Chat Channels removed. 
+      //      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
+      //       return;
+      //      }
+      //
+      //      Component aug;
+      //
+      //      aug = MinecraftClientAudiences.of().asNative(ComplexircClient.mm.deserialize("<blue>IRC | <<red>%s<reset>> %s".formatted(e.getUser().getNick(),e.getMessage())));
+      //
+      //
+      //      ComplexircClient.ircmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(),
+      //              aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
+      //      ComplexircClient.globalmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(),
+      //              aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
+      //      ((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
+      //      if (ComplexircClient.currentchannel== ComplexircClient.channel.irc||ComplexircClient.currentchannel== ComplexircClient.channel.global) {
+      //         util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
+      //      }
 
-      String ifcat = e.getMessage().contains(">w< ") ? e.getMessage().substring(e.getMessage().indexOf(">w< ") + 4):e.getMessage();
+      String message = e.getMessage().contains(">w< ") ? e.getMessage().substring(e.getMessage().indexOf(">w< ") + 4):e.getMessage();
 
-      if (ifcat!=e.getMessage()){
-         Complexirc.LOGGER.info("before decrypt: "+ifcat);
+      if (message!=e.getMessage()){
+         Complexirc.LOGGER.info("before decrypt: "+message);
          try {
-            ifcat = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, ifcat);
+            message = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, message);
          } catch (Exception _) {}
-         Complexirc.LOGGER.info("after decrypt: "+ifcat);
-         ifcat = ifcat + " [dec]";
-         if (ifcat.contains("failedtodecode")) ifcat = e.getMessage() + " [failed to decode]";
+         Complexirc.LOGGER.info("after decrypt: "+message);
+         message = message + " [dec]";
+         if (message.contains("failedtodecode")) message = e.getMessage() + " [failed to decode]";
       }
 
-
-
-      util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), ifcat));
-//      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)) {
-//         util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
-//
-//      }
+      util.msg("<blue>IRC | <red>%s <white>%s".formatted(e.getUser().getNick(), message));
+      //##Depricated - Chat Channels removed. 
+      //      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)) {
+      //         util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
+      //
+      //      }
    }
 }
