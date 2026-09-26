@@ -164,7 +164,7 @@ public class listener extends ListenerAdapter {
          if (message.contains("failedtodecode")) message = e.getMessage() + " [failed to decode]";
       }
 
-      util.msg("<blue>IRC | <red><%s> <white>%s".formatted(e.getUser().getNick(), message));
+      util.msg("<blue>IRC | <white><<red><%s><white>> <white>%s".formatted(e.getUser().getNick(), message));
       //##Depricated - Chat Channels removed. 
       //      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)) {
       //         util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(e.getUser().getNick(), e.getMessage()));
