@@ -124,7 +124,7 @@ public class chatscreenmixin extends Screen {
 //      complexirc$ircButton.setMessage(Component.literal(ComplexircClient.talkinirc ? ">IRC<" : "IRC"));
 //      complexirc$catButton.setMessage(Component.literal(ComplexircClient.cat ? ">Mrewcrypted<" : "Mrewcrypted"));
       this.onClose();
-      Minecraft.getInstance().gui.setScreen(new ChatScreen("",false));
+      Minecraft.getInstance().setScreen(new ChatScreen("",false));
    }
 
    @Inject(method = "extractRenderState", at = @At("HEAD"))
