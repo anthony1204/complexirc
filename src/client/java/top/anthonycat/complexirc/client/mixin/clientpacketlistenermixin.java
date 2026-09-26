@@ -15,6 +15,8 @@ import top.anthonycat.complexirc.client.ComplexircClient;
 import top.anthonycat.complexirc.client.NOT_MY_CODE;
 import top.anthonycat.complexirc.client.util;
 
+import java.util.Optional;
+
 @Mixin(ClientPacketListener.class)
 public class clientpacketlistenermixin {
    @Unique
@@ -33,7 +35,7 @@ public class clientpacketlistenermixin {
       String msg = packet.body().content();
       if (msg.isEmpty()) {
          if (packet.unsignedContent() != null) {
-            msg = packet.unsignedContent().getString();
+            msg = packet.unsignedContent().get().getString();
          } else {
             return;
          }
@@ -61,7 +63,7 @@ public class clientpacketlistenermixin {
          if (ifcat.contains("failedtodecode")) return;
          allow = true;
          ci.cancel();
-         Minecraft.getInstance().getConnection().handlePlayerChat(new ClientboundPlayerChatPacket(packet.globalIndex(), packet.sender(), packet.index(), packet.signature(), new SignedMessageBody.Packed(ifcat, packet.body().timeStamp(), packet.body().salt(), packet.body().lastSeen()), Component.literal(ifcat), packet.filterMask(), packet.chatType()));
+         Minecraft.getInstance().getConnection().handlePlayerChat(new ClientboundPlayerChatPacket(packet.globalIndex(), packet.sender(), packet.index(), packet.signature(), new SignedMessageBody.Packed(ifcat, packet.body().timeStamp(), packet.body().salt(), packet.body().lastSeen()), Optional.of(Component.literal(ifcat)), packet.filterMask(), packet.chatType()));
          //ci.cancel();
       }
    }
