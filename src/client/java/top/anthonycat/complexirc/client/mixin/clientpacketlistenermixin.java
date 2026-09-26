@@ -34,7 +34,7 @@ public class clientpacketlistenermixin {
       String msg = packet.body().content();
       if (msg.isEmpty()) {
          if (packet.unsignedContent() != null) {
-            msg = packet.unsignedContent().getString();
+            msg = packet.unsignedContent().get().getString();
          } else {
             return;
          }
