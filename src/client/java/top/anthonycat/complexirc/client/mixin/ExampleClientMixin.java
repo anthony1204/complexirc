@@ -21,7 +21,7 @@ public class ExampleClientMixin {
 
 	private boolean allow = false;
 
-	@Inject(at = @At("HEAD"), method = "sendChat",cancellable = true)
+	@Inject(at = @At("HEAD"), method = "sendChat", cancellable = true)
 	private void init(String content,CallbackInfo info) {
 		if (allow) {
 			allow = false;
@@ -41,20 +41,20 @@ public class ExampleClientMixin {
 			return;
 		}
 
-
-
 		if (content.equals("!")){
-			util.msg("<blue>IRC | you are now talking in minecraft chat");
+			util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to>" + "<blue>minecraft<gray> " + "<lang:text.chat.complexirc.chat>");
 			ComplexircClient.talkinirc = false;
 			info.cancel();
 			return;
 		}
+
 		if (content.equals("#")){
-			util.msg("<blue>IRC | you are now talking in irc");
+			util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to>" + "<red>irc<gray> " + "<lang:text.chat.complexirc.chat>");
 			ComplexircClient.talkinirc = true;
 			info.cancel();
 			return;
 		}
+
 		if (content.startsWith("!")){
 			content = content.substring(1);
 //			info.cancel();
@@ -75,78 +75,66 @@ public class ExampleClientMixin {
 
 			return;
 		}
+
 		if (content.startsWith("#")){
 			info.cancel();
 
 			if (ComplexircClient.bot!=null&&!ComplexircClient.bot.isConnected()){
-				util.msg("<red>IRC | you are not connected to irc, connecting now");
+				util.msg("<red>IRC | <gray><lang:text.chat.complexirc.not_connected_force>");
 				ComplexircClient.setupirc();
 				return;
 			}
 			content = content.substring(1);
-//			Component aug;
-//
-//			aug = MinecraftClientAudiences.of().asNative(ComplexircClient.mm.deserialize("<blue>IRC | <reset><<red>%s<reset>> %s".formatted(ComplexircClient.CONFIG.serverstuff.username(),content)));
-//
+			//			Component aug;
+			//
+			//			aug = MinecraftClientAudiences.of().asNative(ComplexircClient.mm.deserialize("<blue>IRC | <reset><<red>%s<reset>> %s".formatted(ComplexircClient.CONFIG.serverConfig.username(),content)));
+			//
 
-//			ComplexircClient.ircmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(),
-//					aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
-			//((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
-
-
-
+			//			ComplexircClient.ircmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(),
+			//					aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
+						//((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
 			if (ComplexircClient.cat) {
 				String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
-				ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel, ">w< "+neww);
+				ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, ">w< "+neww);
 				util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), ">w< "+content+" [enc]"));
 
-			}else {
-				ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel, content);
+			} else {
+				ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, content);
 				util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content));
 			}
 			return;
 
 		}
 
-
 		if (!ComplexircClient.talkinirc) return;
 
-
 		if (ComplexircClient.bot==null){
-			util.msg("<red>IRC | you are not connected to irc, connecting now");
+			util.msg("<red>IRC | <gray><lang:text.chat.complexirc.not_connected_force>");
 			ComplexircClient.setupirc();
 			return;
 		}
-
 
 		if (!ComplexircClient.bot.isConnected()){
-			util.msg("<red>IRC | you are not connected to irc, connecting now");
+			util.msg("<red>IRC | <gray><lang:text.chat.complexirc.not_connected_force>");
 			ComplexircClient.setupirc();
 			return;
 		}
+		//
+		//		Component aug;
+		//
+		//		aug = MinecraftClientAudiences.of().asNative(ComplexircClient.mm.deserialize("<blue>IRC | <reset><<red>%s<reset>> %s".formatted(ComplexircClient.CONFIG.serverConfig.username(),content)));
+		//
 
-
-
-
-//
-//		Component aug;
-//
-//		aug = MinecraftClientAudiences.of().asNative(ComplexircClient.mm.deserialize("<blue>IRC | <reset><<red>%s<reset>> %s".formatted(ComplexircClient.CONFIG.serverstuff.username(),content)));
-//
-
-//		ComplexircClient.ircmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(),
-//				aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
-//		((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
-
-
-
+		//		ComplexircClient.ircmsg.add(new GuiMessage(Minecraft.getInstance().gui.hud.getGuiTicks(),
+		//				aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
+		//		((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
 		if (ComplexircClient.cat) {
 			String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
-			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel, ">w< "+neww);
+			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, ">w< "+neww);
 			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content+" [enc]"));
 
-		}else {
-			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverstuff.postjoinchannel, content);
+		} else {
+			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, content);
 			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content));
 		}
 

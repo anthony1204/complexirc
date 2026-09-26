@@ -1,6 +1,5 @@
 package top.anthonycat.complexirc.client.mixin;
 
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
@@ -16,8 +15,6 @@ import top.anthonycat.complexirc.client.ComplexircClient;
 import top.anthonycat.complexirc.client.NOT_MY_CODE;
 import top.anthonycat.complexirc.client.util;
 
-import java.util.Optional;
-
 @Mixin(ClientPacketListener.class)
 public class clientpacketlistenermixin {
    @Unique
@@ -25,26 +22,22 @@ public class clientpacketlistenermixin {
 
    @Inject(method = "handlePlayerChat", at = @At("HEAD"), cancellable = true)
    public void handlePlayerChat(final ClientboundPlayerChatPacket packet, CallbackInfo ci) {
-//      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.normal)){
-//       //  ci.cancel();
-//      }
-
+      //      if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.normal)){
+      //       ci.cancel();
+      //      }
       if (allow){
          allow= false;
          return;
       }
 
-
       String msg = packet.body().content();
       if (msg.isEmpty()) {
          if (packet.unsignedContent() != null) {
-            msg = packet.unsignedContent().get().getString();
+            msg = packet.unsignedContent().getString();
          } else {
             return;
          }
-
       }
-
 
       String ifcat = msg.contains(">w< ") ? msg.substring(msg.indexOf(">w< ") + 4) : msg;
 
@@ -62,13 +55,13 @@ public class clientpacketlistenermixin {
          }
          // f.append("<").append(Minecraft.getInstance().getConnection().getPlayerInfo(packet.sender()).getProfile().name()).append("> ").append(ifcat).append(" [dec]");
          // Complexirc.LOGGER.info("final: " + f);
-//         util.msg(f.toString());
+         //         util.msg(f.toString());
 
          //new ClientboundPlayerChatPacket(packet.globalIndex(),packet.sender(),packet.index(),packet.signature(),new SignedMessageBody.Packed(ifcat,packet.body().timeStamp(),packet.body().salt(),packet.body().lastSeen()), Component.literal(ifcat),packet.filterMask(),packet.chatType());
          if (ifcat.contains("failedtodecode")) return;
          allow = true;
          ci.cancel();
-         Minecraft.getInstance().getConnection().handlePlayerChat(new ClientboundPlayerChatPacket(packet.globalIndex(), packet.sender(), packet.index(), packet.signature(), new SignedMessageBody.Packed(ifcat, packet.body().timeStamp(), packet.body().salt(), packet.body().lastSeen()), Optional.of(Component.literal(ifcat)), packet.filterMask(), packet.chatType()));
+         Minecraft.getInstance().getConnection().handlePlayerChat(new ClientboundPlayerChatPacket(packet.globalIndex(), packet.sender(), packet.index(), packet.signature(), new SignedMessageBody.Packed(ifcat, packet.body().timeStamp(), packet.body().salt(), packet.body().lastSeen()), Component.literal(ifcat), packet.filterMask(), packet.chatType()));
          //ci.cancel();
       }
    }

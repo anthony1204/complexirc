@@ -3,11 +3,9 @@
 	"id": "complexirc",
 	"version": "${version}",
 	"name": "complexirc",
-	"description": "simpleirc but.. actually less complex (type /irc openconfig i didnt get mod menu working)",
+	"description": "simpleirc but.. actually less complex (type /irc config i didnt get mod menu working)",
 	"authors": [
-		"Anthony4933",
-		"SaxTheSaxophone",
-		"VortexTraveler"
+		"Anthony4933, SaxTheSaxophone"
 	],
 	"contact": {
 		"homepage": "https://anthonycat.top"

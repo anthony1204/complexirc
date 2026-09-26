@@ -42,20 +42,14 @@ public class ComplexircClient implements ClientModInitializer {
 
 	public static top.anthonycat.complexirc.client.Configuration CONFIG = null;
 
-	private final int green = new Color(0,255,0).getRGB();
-
-	public KeyMapping mcirc = new KeyMapping("switch", InputConstants.Type.KEYBOARD, InputConstants.KEY_MINUS,KeyMapping.Category.register(Identifier.fromNamespaceAndPath("complexirc","keybinds")));
-
+	public KeyMapping mcirc = new KeyMapping("text.key.complexirc.toggle", InputConstants.Type.KEYSYM, InputConstants.KEY_MINUS, KeyMapping.Category.register(Identifier.fromNamespaceAndPath("complexirc", "keybinds")));
 
 //	public static List<GuiMessage> mcmsg = new ArrayList<>();
 //	public static List<GuiMessage> ircmsg = new ArrayList<>();
 //	public static List<GuiMessage> globalmsg = new ArrayList<>();
 
-
 	public static Boolean ircchatenabled = true;
 	public static Boolean mcchatenabled = true;
-
-
 
 	public static Configuration config;
 	public static Thread ircthread;
@@ -68,7 +62,6 @@ public class ComplexircClient implements ClientModInitializer {
 	public static boolean cat = false;
 			 //Create an immutable configuration from this builder
 
-
 	@Override
 	public void onInitializeClient() {
 		AutoConfig.register(top.anthonycat.complexirc.client.Configuration.class, Toml4jConfigSerializer::new);
@@ -78,130 +71,136 @@ public class ComplexircClient implements ClientModInitializer {
 		KeyMappingHelper.registerKeyMapping(mcirc);
 
 
-		ClientTickEvents.END_CLIENT_TICK.register(clien -> {
-
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (mcirc.consumeClick()) {
+				if (bot==null||!bot.isConnected()){
+					util.msg("<yellow>IRC | <gray><lang:text.chat.complexirc.not_connected_force>");
+					setupirc();
+				}
 				talkinirc = !talkinirc;
 				if (talkinirc) {
-					util.msg("<blue>IRC | you are now talking in irc");
-				}else{
-					util.msg("<red>IRC | you are now talking in minecraft");
+					util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to> " + "<red>irc " + "<lang:text.chat.complexirc.chat>");
+				} else {
+					util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to> " + "<blue>minecraft " + "<lang:text.chat.complexirc.chat>");
 				}
-
 			}
-
 		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register((e) -> {
 			if (bot!=null&&bot.isConnected()&&ircthread!=null&&ircthread.isAlive()) {
-				bot.sendIRC().quitServer("exiting game");
+				bot.sendIRC().quitServer("closing game.");
 
             try {ircthread.join(1010);} catch (InterruptedException ex) {}
 				ircthread.interrupt();
          }
 		});
 
-//		HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,Identifier.fromNamespaceAndPath("complexirc","hud"),(graphics, deltaTracker) -> {
-//			if (Minecraft.getInstance().getscree)
-//			graphics.text(Minecraft.getInstance().font,"you are in irc",5,Minecraft.getInstance().getWindow().getGuiScaledHeight()-30,green);
-//		});
-
+		//		HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,Identifier.fromNamespaceAndPath("complexirc","hud"),(graphics, deltaTracker) -> {
+		//			if (Minecraft.getInstance().getscree)
+		//			graphics.text(Minecraft.getInstance().font,"you are in irc",5,Minecraft.getInstance().getWindow().getGuiScaledHeight()-30,green);
+		//		});
 
 		ClientCommandRegistrationCallback.EVENT.register(((dispatcher, buildContext) -> {
 			dispatcher.register(ClientCommands.literal("irc")
-					.then(
-							ClientCommands.literal("connect")
-									.executes((context) -> {
-										audience.sendMessage(mm.deserialize("<blue>attempting to connect to irc.."));
+				.then(
+					ClientCommands.literal("connect")
+						.executes((context) -> {
+							if (bot!=null&&bot.isConnected()){
+								util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.already_connected>");
+								return 1;
+							}
+							setupirc();
+
+							return 1;
+						})
+				).then(
+					ClientCommands.literal("raw")
+						.then(
+							ClientCommands.argument("raw",StringArgumentType.greedyString())
+								.executes((c) -> {
+									if (bot==null||!bot.isConnected()){
+										util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.not_connected_force>");
 										setupirc();
+									}
+									String raw = StringArgumentType.getString(c,"raw");
+									bot.sendRaw().rawLine(raw);
+									util.msg("<green>IRC | <gray>Sent raw message to IRC server");
+									return 1;
+								})
+					)
+				).then(
+					ClientCommands.literal("disconnect")
+						.executes((c) ->{
+							if (bot==null||!bot.isConnected()){
+								util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.not_connected>");
+								return 1;
+							}
+							bot.stopBotReconnect();
+							bot.sendIRC().quitServer("Disconnected via command.");
+							util.msg("<red>IRC | <lang:text.chat.complexirc.on_disconnect>");
+							talkinirc = false;
+							return 1;
+						})
+				).then(
+					ClientCommands.literal("openconfig")
+						.executes((c) ->{
+							util.msg("<blue>IRC | Opening config screen...");
 
-										return 1;
-									})
-					).then(
-							ClientCommands.literal("raw")
-									.then(
-											ClientCommands.argument("raw",StringArgumentType.greedyString())
-													.executes((c) -> {
-														String raw = StringArgumentType.getString(c,"raw");
-														bot.sendRaw().rawLine(raw);
-														util.msg("<blue>sent raw message to irc server");
+							Minecraft.getInstance().execute(() -> {
+								Screen s = AutoConfigClient.getConfigScreen(top.anthonycat.complexirc.client.Configuration.class, Minecraft.getInstance().screen).get();
+								//	util.msg("aughscreen: "+s.toString());
+								Minecraft.getInstance().setScreenAndShow(s);
 
+							});
 
-														return 1;
-													})
-									)
-					).then(
-							ClientCommands.literal("disconnect")
-									.executes((c) ->{
-										bot.stopBotReconnect();
-										bot.sendIRC().quitServer("disconnected via /irc disconnect");
-										util.msg("<blue>disconnecting from irc");
-										talkinirc = false;
-										return 1;
-									})
-					).then(
-							ClientCommands.literal("openconfig")
-									.executes((c) ->{
-										util.msg("<blue>probably™ opened config");
+							return 1;
+						})
+				).then(
+					ClientCommands.literal("list")
+						.executes((c) ->{
+							if (bot==null||!bot.isConnected()){
+								util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.not_connected>");
+								return 1;
+							}
+							StringBuilder names = new StringBuilder("users in ");
+							names.append(CONFIG.serverConfig.postjoinchannel).append(": ");
 
-										Minecraft.getInstance().execute(() -> {
-											Screen s = AutoConfigClient.getConfigScreen(top.anthonycat.complexirc.client.Configuration.class, Minecraft.getInstance().gui.screen()).get();
-										//	util.msg("aughscreen: "+s.toString());
-											Minecraft.getInstance().setScreenAndShow(s);
+							names.append(String.join(", ", bot.getUserChannelDao().getChannel(CONFIG.serverConfig.postjoinchannel).getUsersNicks()));
 
-										});
+							util.msg("<blue>IRC | "+names);
 
-										return 1;
-									}))
-					.then(
-							ClientCommands.literal("list")
-									.executes((c) ->{
-										StringBuilder names = new StringBuilder("users in ");
-										names.append(CONFIG.serverstuff.postjoinchannel).append(": ");
-
-										names.append(String.join(", ", bot.getUserChannelDao().getChannel(CONFIG.serverstuff.postjoinchannel).getUsersNicks()));
-
-										util.msg("<blue>IRC | "+names);
-
-										return 1;
-									}))
-
-
-
-
-
-
-
+							return 1;
+						})
+				)
 			);
 
 
 			dispatcher.register(
-							ClientCommands.literal("dm")
-									.then(ClientCommands.argument("nick",StringArgumentType.word()).suggests(((commandContext, suggestionsBuilder) -> {
-										if (bot==null||!bot.isConnected()){
-											suggestionsBuilder.suggest("connect to irc first");
-											return suggestionsBuilder.buildFuture();
-										}
-										bot.getUserChannelDao().getChannel(CONFIG.serverstuff.postjoinchannel).getUsersNicks().forEach(suggestionsBuilder::suggest);
+				ClientCommands.literal("dm")
+					.then(ClientCommands.argument("nick",StringArgumentType.word()).suggests(((commandContext, suggestionsBuilder) -> {
+						if (bot==null||!bot.isConnected()){
+							suggestionsBuilder.suggest("connect to irc first");
+							return suggestionsBuilder.buildFuture();
+						}
+						bot.getUserChannelDao().getChannel(CONFIG.serverConfig.postjoinchannel).getUsersNicks().forEach(suggestionsBuilder::suggest);
 
-										return suggestionsBuilder.buildFuture();
-									})).then(
-											ClientCommands.argument("msg",StringArgumentType.greedyString()).executes((commandContext -> {
-												String nick = StringArgumentType.getString(commandContext,"nick");
-												String msg = StringArgumentType.getString(commandContext,"msg");
-												if (bot==null||!bot.isConnected()){
-													util.msg("<blue>you're not connected to irc");
-													return 1;
-												}
-												bot.getUserChannelDao().getUser(nick).send().message(msg);
-												util.msg("<blue>IRC | DM to %s: %s".formatted(nick,msg));
-
-
-												return 1;
-											}))
-									)));
+						return suggestionsBuilder.buildFuture();
+					})).then(
+						ClientCommands.argument("msg",StringArgumentType.greedyString()).executes((commandContext -> {
+							String nick = StringArgumentType.getString(commandContext,"nick");
+							String msg = StringArgumentType.getString(commandContext,"msg");
+							if (bot==null||!bot.isConnected()){
+								util.msg("<blue>IRC | You're not connected to a IRC server. Use /irc connect to connect to the server.");
+								return 1;
+							}
+							bot.getUserChannelDao().getUser(nick).send().message(msg);
+							util.msg("<blue>IRC | DM to %s: %s".formatted(nick,msg));
 
 
+							return 1;
+						}))
+					))
+			);
 		}));
 
 
@@ -209,44 +208,47 @@ public class ComplexircClient implements ClientModInitializer {
 
 	public static void setupirc(){
 		//CONFIG.load();
-		if (ircthread!=null&&bot!=null&&bot.isConnected()){
-			bot.sendIRC().quitServer("Restarting :3");
+		if ((ircthread != null) && (bot != null) && bot.isConnected()){
+			bot.sendIRC().quitServer("Attempting to reconnect.");
 
 			try {
 				ircthread.join(1000);
+				audience.sendMessage(ComplexircClient.mm.deserialize("<yellow>IRC | <gray><lang:text.chat.complexirc.reconnecting>"));
 				ircthread.interrupt();
 			} catch (InterruptedException ignored) {}
 
 		}
 
+		audience.sendMessage(ComplexircClient.mm.deserialize("<yellow>IRC | <gray><lang:text.chat.complexirc.connecting>"));
+
 		StringBuilder channelwithpass = new StringBuilder();
 
-		channelwithpass.append(CONFIG.serverstuff.postjoinchannel);
-		if (CONFIG.serverstuff.channelpass!=""){
-			channelwithpass.append(" ").append(CONFIG.serverstuff.channelpass);
+		channelwithpass.append(CONFIG.serverConfig.postjoinchannel);
+		if (CONFIG.serverConfig.channelpass!=""){
+			channelwithpass.append(" ").append(CONFIG.serverConfig.channelpass);
 		}
 
 		config = new Configuration.Builder()
-              .setName(CONFIG.serverstuff.username) //Nick of the bot. CHANGE IN YOUR CODE
-              .setLogin(CONFIG.serverstuff.username) //Login part of hostmask, eg name:login@host
-				  .setRealName(CONFIG.serverstuff.username+" (ComplexIRC)")
-				  .setAutoReconnect(CONFIG.serverstuff.autoreconnect)
+              .setName(CONFIG.serverConfig.username) //Username
+              .setLogin(CONFIG.serverConfig.username) //Login part of hostmask, eg name:login@host
+				  .setRealName(CONFIG.serverConfig.username+" (ComplexIRC)") //Real name part of hostmask, eg name:login@host
+				  .setAutoReconnect(CONFIG.serverConfig.autoreconnect) 
 				  .setAutoReconnectAttempts(5)
               .setAutoNickChange(true) //Automatically change nick when the current one is in use
-              .addAutoJoinChannel(channelwithpass.toString())//Join #pircbotx channel on connect
-              .addListener(new listener())
-				  .addServer(CONFIG.serverstuff.serverip, CONFIG.serverstuff.port)
+              .addAutoJoinChannel(channelwithpass.toString())//Join the channel on connect, with password if provided
+              .addListener(new listener()) 
+				  .addServer(CONFIG.serverConfig.serverip, CONFIG.serverConfig.port) 
 				.buildConfiguration();
 		ircthread = new Thread(() -> {
-			bot = new PircBotX(config);
-         try {
-            bot.startBot();
-         } catch (IOException | IrcException _) {
-
-         }
+				bot = new PircBotX(config);
+         	try {
+            	bot.startBot();
+         	} catch (IOException | IrcException e) {
+				Complexirc.LOGGER.info("Error connecting to IRC server: "+ e.getMessage());
+         	}
       },"ircthread");
-		ircthread.start();
-		Complexirc.LOGGER.info("starting irc thread..");
+			ircthread.start();
+			Complexirc.LOGGER.info("Starting irc thread...");
 
 
 	}
@@ -257,5 +259,6 @@ public class ComplexircClient implements ClientModInitializer {
 		global
 	}
 
-
+    public class CONFIG {
+    }
 }
