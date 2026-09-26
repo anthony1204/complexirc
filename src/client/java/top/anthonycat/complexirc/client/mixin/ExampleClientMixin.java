@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import top.anthonycat.complexirc.Complexirc;
 import top.anthonycat.complexirc.client.ComplexircClient;
 import top.anthonycat.complexirc.client.NOT_MY_CODE;
 import top.anthonycat.complexirc.client.util;
@@ -36,8 +37,9 @@ public class ExampleClientMixin {
 				return;
 			}
 			allow = true;
-			if (ComplexircClient.cat) util.msg("<blue>you: "+content+" [dec]");
-			Minecraft.getInstance().getConnection().sendChat(neww);
+//			if (ComplexircClient.cat) util.msg("<blue>you: "+content+" [dec]");
+			Complexirc.LOGGER.info("your original message for logging purposes: "+content);
+			Minecraft.getInstance().getConnection().sendChat(">w< "+neww);
 			return;
 		}
 
@@ -71,7 +73,7 @@ public class ExampleClientMixin {
 			allow = true;
 
 			if (ComplexircClient.cat) util.msg("<blue>you: "+content+" [dec]");
-			Minecraft.getInstance().getConnection().sendChat(neww);
+			Minecraft.getInstance().getConnection().sendChat(">w< "+neww);
 
 			return;
 		}

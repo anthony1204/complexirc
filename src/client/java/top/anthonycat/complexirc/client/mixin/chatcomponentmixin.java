@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import top.anthonycat.complexirc.Complexirc;
 import top.anthonycat.complexirc.client.ComplexircClient;
 import top.anthonycat.complexirc.client.util;
 
@@ -31,6 +32,16 @@ public abstract class chatcomponentmixin {
 
    @Inject(method = "addMessage", at = @At("HEAD"), cancellable = true)
    private void addMessage(final Component contents, final @Nullable MessageSignature signature, final GuiMessageSource source, final @Nullable GuiMessageTag tag,CallbackInfo ci) {
+
+      //intentionally only works once btw
+      //*drags you into irc*
+
+      if (ComplexircClient.xshownextmsg){
+         ComplexircClient.xshownextmsg = false;
+         Complexirc.LOGGER.info("not showing next msg: "+contents.getString());
+         ci.cancel();
+         return;
+      }
 
       if ((source.equals(GuiMessageSource.PLAYER) && contents.getString().contains("join irc")) && ComplexircClient.CONFIG.preferencesConfig.forcejoin && ComplexircClient.bot == null) {
          ComplexircClient.setupirc();
