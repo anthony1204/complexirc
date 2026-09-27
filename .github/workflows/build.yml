@@ -13,7 +13,9 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      # this one line is ai cause im too stupid 
+      - name: checkout repository
+        uses: actions/checkout@v6
+      # this one task/step is ai cause im too stupid 
       - name: Extract Version from gradle.properties
         id: get_version
         run: |
@@ -28,8 +30,6 @@ jobs:
           echo "Extracted Version: $VERSION"
           # Saves output as v1.0.1+26.2
           echo "version=v$VERSION" >> $GITHUB_OUTPUT
-      - name: checkout repository
-        uses: actions/checkout@v6
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
       - name: setup jdk
