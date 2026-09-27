@@ -65,7 +65,7 @@ jobs:
           name: ComplexIRC
           path: build/libs/*.jar
       - name: Create GitHub Release
-        if: steps.check_release.outputs.RELEASE_EXISTS != 'true'
+        if: github.repository == 'anthony1204/complexirc' && steps.check_release.outputs.RELEASE_EXISTS != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.get_version.outputs.version }}
@@ -76,3 +76,4 @@ jobs:
             build/libs/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
