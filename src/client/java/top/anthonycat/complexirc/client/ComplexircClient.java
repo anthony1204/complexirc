@@ -31,7 +31,9 @@ import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.spongepowered.asm.mixin.Unique;
+
 import top.anthonycat.complexirc.Complexirc;
+import top.anthonycat.complexirc.client.listener;
 
 import java.awt.*;
 import java.io.IOException;
@@ -47,6 +49,8 @@ public class ComplexircClient implements ClientModInitializer {
 //	public static List<GuiMessage> mcmsg = new ArrayList<>();
 //	public static List<GuiMessage> ircmsg = new ArrayList<>();
 //	public static List<GuiMessage> globalmsg = new ArrayList<>();
+
+	public static String prefferedChannel = null;
 
 	public static Boolean ircchatenabled = true;
 	public static Boolean mcchatenabled = true;
@@ -82,9 +86,9 @@ public class ComplexircClient implements ClientModInitializer {
 				}
 				talkinirc = !talkinirc;
 				if (talkinirc) {
-					util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to> " + "<red>irc " + "<lang:text.chat.complexirc.chat>");
+					util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to> " + "<red>irc " + "<gray><lang:text.chat.complexirc.chat>");
 				} else {
-					util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to> " + "<blue>minecraft " + "<lang:text.chat.complexirc.chat>");
+					util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to> " + "<blue>minecraft " + "<gray><lang:text.chat.complexirc.chat>");
 				}
 			}
 		});
@@ -170,11 +174,50 @@ public class ComplexircClient implements ClientModInitializer {
 
 							names.append(String.join(", ", bot.getUserChannelDao().getChannel(CONFIG.serverConfig.postjoinchannel).getUsersNicks()));
 
-							util.msg("<blue>IRC | "+names);
+							util.msg("<blue>IRC | " + names);
 
 							return 1;
 						})
+				).then(
+					ClientCommands.literal("reconnect")
+						.executes((c) ->{
+							if (bot==null||!bot.isConnected()){
+								util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.not_connected>");
+								return 1;
+							}
+							setupirc();
+							bot.sendIRC().joinChannel(CONFIG.serverConfig.postjoinchannel);
+							return 1;
+						})
 				)
+
+				// ## Channel command is disabled until i can properly implement channel creation and password stuff. Also we might need to add moderation tools before.
+				// .then(
+				// 	ClientCommands.literal("channel")
+				// 		.then(ClientCommands.argument("channel",StringArgumentType.word()).executes((c) ->{
+				// 			String channel = StringArgumentType.getString(c,"channel");
+				// 			if (!channel.startsWith("#")) channel = "#" + channel;
+				// 			Complexirc.LOGGER.info("Channel command trigger, channel list:" + listener.cList);
+				// 			for (int i = 0; i < listener.cList.size(); i++) {
+				// 				if (listener.cList.get(i).equals(channel)) {
+				// 					Complexirc.LOGGER.info(listener.cList.get(i));
+				// 					if (bot==null||!bot.isConnected()) {
+				// 						util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.not_connected>");
+				// 						prefferedChannel = channel;
+										
+				// 						setupirc();
+				// 						bot.sendIRC().joinChannel(channel);
+				// 						return 1;
+				// 					}
+				// 					bot.sendIRC().joinChannel(channel);
+				// 					util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.joining_channel> <green>" + channel + "<gray>...");
+				// 					return 1;
+				// 					}
+				// 				}
+				// 			util.msg("<red> | <gray><lang:text.chat.complexirc.incorrect_channel>");
+				// 			return 1;
+				// 		}))
+				// )
 			);
 
 
@@ -198,7 +241,6 @@ public class ComplexircClient implements ClientModInitializer {
 							}
 							bot.getUserChannelDao().getUser(nick).send().message(msg);
 							util.msg("<blue>IRC | DM to %s: %s".formatted(nick,msg));
-
 
 							return 1;
 						}))
@@ -224,23 +266,26 @@ public class ComplexircClient implements ClientModInitializer {
 
 		audience.sendMessage(ComplexircClient.mm.deserialize("<yellow>IRC | <gray><lang:text.chat.complexirc.connecting>"));
 
-		StringBuilder channelwithpass = new StringBuilder();
+		StringBuilder requestedChannel = new StringBuilder();
 
-		channelwithpass.append(CONFIG.serverConfig.postjoinchannel);
+		prefferedChannel = prefferedChannel != null ? prefferedChannel : CONFIG.serverConfig.postjoinchannel;
+
+		requestedChannel.append(prefferedChannel);
+		//If channel has a password, append it to the channel name with a space in between
 		if (CONFIG.serverConfig.channelpass!=""){
-			channelwithpass.append(" ").append(CONFIG.serverConfig.channelpass);
+			requestedChannel.append(" ").append(CONFIG.serverConfig.channelpass);
 		}
 
 		config = new Configuration.Builder()
-              .setName(CONFIG.serverConfig.username) //Username
-              .setLogin(CONFIG.serverConfig.username) //Login part of hostmask, eg name:login@host
-				  .setRealName(CONFIG.serverConfig.username+" (ComplexIRC)") //Real name part of hostmask, eg name:login@host
-				  .setAutoReconnect(CONFIG.serverConfig.autoreconnect) 
-				  .setAutoReconnectAttempts(5)
-              .setAutoNickChange(true) //Automatically change nick when the current one is in use
-              .addAutoJoinChannel(channelwithpass.toString())//Join the channel on connect, with password if provided
-              .addListener(new listener()) 
-				  .addServer(CONFIG.serverConfig.serverip, CONFIG.serverConfig.port) 
+              	.setName(CONFIG.serverConfig.username) //Username
+              	.setLogin(CONFIG.serverConfig.username) //Login part of hostmask, eg name:login@host
+				  	.setRealName(Minecraft.getInstance().player.getName() + " (ComplexIRC)") //Real minecraft username is used for real name.
+				  	.setAutoReconnect(CONFIG.serverConfig.autoreconnect) 
+				  	.setAutoReconnectAttempts(5)
+              	.setAutoNickChange(true) //Automatically change nick when the current one is in use
+              	.addAutoJoinChannel(requestedChannel.toString())//Join the channel on connect, with password if provided
+              	.addListener(new listener()) 
+				  	.addServer(CONFIG.serverConfig.serverip, CONFIG.serverConfig.port) 
 				.buildConfiguration();
 		ircthread = new Thread(() -> {
 				bot = new PircBotX(config);
