@@ -13,9 +13,13 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
+      - name: nu uh
+        run: |
+            echo "main shouldn be released"
+            exit 1
       - name: checkout repository
         uses: actions/checkout@v6
-      # this one task/step is ai cause im too stupid 
+      # this one task/step is ai cause im too stupid
       - name: Extract Version from gradle.properties
         id: get_version
         run: |
