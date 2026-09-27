@@ -144,6 +144,7 @@ public class ComplexircClient implements ClientModInitializer {
 							}
 							bot.stopBotReconnect();
 							bot.sendIRC().quitServer("Disconnected via command.");
+							
 							util.msg("<red>IRC | <lang:text.chat.complexirc.on_disconnect>");
 							talkinirc = false;
 							return 1;
@@ -254,7 +255,7 @@ public class ComplexircClient implements ClientModInitializer {
 	public static void setupirc(){
 		//CONFIG.load();
 		if ((ircthread != null) && (bot != null) && bot.isConnected()){
-			bot.sendIRC().quitServer("Attempting to reconnect.");
+			bot.sendIRC().quitServer("reconnecting");
 
 			try {
 				ircthread.join(1000);
@@ -275,15 +276,15 @@ public class ComplexircClient implements ClientModInitializer {
 		if (CONFIG.serverConfig.channelpass!=""){
 			requestedChannel.append(" ").append(CONFIG.serverConfig.channelpass);
 		}
-
+		//sax pls stop capitalizing everything
 		config = new Configuration.Builder()
               	.setName(CONFIG.serverConfig.username) //Username
               	.setLogin(CONFIG.serverConfig.username) //Login part of hostmask, eg name:login@host
-				  	.setRealName(Minecraft.getInstance().player.getName() + " (ComplexIRC)") //Real minecraft username is used for real name.
+				  	.setRealName(Minecraft.getInstance().getUser().getName() + " (ComplexIRC)") //note: sax wanted to use player.getName() but that would result in null
 				  	.setAutoReconnect(CONFIG.serverConfig.autoreconnect) 
 				  	.setAutoReconnectAttempts(5)
-              	.setAutoNickChange(true) //Automatically change nick when the current one is in use
-              	.addAutoJoinChannel(requestedChannel.toString())//Join the channel on connect, with password if provided
+              	.setAutoNickChange(true) //automatically change nick when the current one is in use
+              	.addAutoJoinChannel(requestedChannel.toString())//join the channel on connect, with password if provided
               	.addListener(new listener()) 
 				  	.addServer(CONFIG.serverConfig.serverip, CONFIG.serverConfig.port) 
 				.buildConfiguration();
@@ -301,12 +302,13 @@ public class ComplexircClient implements ClientModInitializer {
 
 	}
 
+	//ts is unused btw
 	public enum channel{
 		normal,
 		irc,
 		global
 	}
-
+	// ???????????????
     public class CONFIG {
     }
 }
