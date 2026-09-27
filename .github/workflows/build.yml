@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
-      # this one task/step is ai cause im too stupid 
+      # this next 2 task/step is ai cause im too stupid 
       - name: Extract Version from gradle.properties
         id: get_version
         run: |
@@ -30,6 +30,24 @@ jobs:
           echo "Extracted Version: $VERSION"
           # Saves output as v1.0.1+26.2
           echo "version=v$VERSION" >> $GITHUB_OUTPUT
+      - name: Check if Release Exists
+        id: check_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TARGET_TAG="${{ steps.get_version.outputs.version }}"
+          
+          # Use GitHub CLI to check if the release exists. 
+          # || true prevents the script from crashing when gh returns a 404 error code.
+          RELEASE_CHECK=$(gh release view "$TARGET_TAG" --json tagName 2>&1 || true)
+
+          if [[ "$RELEASE_CHECK" == *"$TARGET_TAG"* ]]; then
+            echo "RELEASE_EXISTS=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Release $TARGET_TAG already exists. Skipping build and release steps."
+          else
+            echo "RELEASE_EXISTS=false" >> $GITHUB_OUTPUT
+            echo "✅ Release $TARGET_TAG does not exist yet. Proceeding with deployment."
+          fi
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
       - name: setup jdk
@@ -46,10 +64,13 @@ jobs:
         with:
           name: ComplexIRC
           path: build/libs/*.jar
-      - name: Create Release and Upload Assets
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.RELEASE_EXISTS != 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "${{ steps.get_version.outputs.version }}"
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: "${{ steps.get_version.outputs.version }}"
+          draft: false
           prerelease: false
           files: |
             build/libs/*.jar
