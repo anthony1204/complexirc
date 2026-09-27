@@ -70,10 +70,8 @@ jobs:
         with:
           tag_name: ${{ steps.get_version.outputs.version }}
           name: "${{ steps.get_version.outputs.version }}"
-          generate_release_notes: true
           draft: false
           prerelease: false
-          latest: true
           files: |
             build/libs/*.jar
         env:
