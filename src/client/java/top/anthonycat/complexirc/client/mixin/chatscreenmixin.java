@@ -1,6 +1,5 @@
 package top.anthonycat.complexirc.client.mixin;
 
-
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.kyori.adventure.audience.Audience;
@@ -54,31 +53,27 @@ public class chatscreenmixin extends Screen {
       //how hard is it to space 3 buttons equally
       //yes.
 
+      //##  Encrypt button
+      Button enc = Button.builder(Component.literal(ComplexircClient.cat ? "🔒" : "🔓"), (button) -> {
+         ComplexircClient.cat = !ComplexircClient.cat;
+         //why does this need a message
+        // util.msg("<blue>IRC | "+(ComplexircClient.cat ? "Messages you sent are now mrewcrypted.":"Messages you sent are no longer mrewcrypted."));
+            complexirc$updateButtonLabels();
+      })
+      .bounds(5, this.height - 38, 20, 20)
+      .tooltip(Tooltip.create(Component.literal("mrewcrypts messages that are sent with a key. (configure the encyrption key in /irc openconfig)")))
+      .build();
+
       //##  MC button
       Button mc = Button.builder(Component.literal(ComplexircClient.talkinirc ? " Minecraft" : ">Minecraft<"), (button) -> {
-         util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to> " + "<blue>minecraft<gray> " + "<lang:text.chat.complexirc.chat>");
+         util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to> " + "<blue>minecraft<gray> " + "<gray><lang:text.chat.complexirc.chat>");
          ComplexircClient.talkinirc = false;
          ComplexircClient.currentchannel = ComplexircClient.channel.normal;
          complexirc$updateButtonLabels();
-      }).bounds(12, this.height - 38, 96, 20).build();
-
-      //      Button global = Button.builder(Component.literal(ComplexircClient.currentchannel == ComplexircClient.channel.global ? ">global<" : "global"), (button) -> {
-      //         util.msg("<blue>IRC | changed channel to global (both)");
-      //         ComplexircClient.currentchannel = ComplexircClient.channel.global;
-      //
-      //         Minecraft.getInstance().gui.hud.getChat().setVisibleMessageFilter(msg -> true);
-      //
-      //
-      //         double mx = Minecraft.getInstance().mouseHandler.xpos();
-      //         double my = Minecraft.getInstance().mouseHandler.ypos();
-      //
-      //         cs.onClose();
-      //
-      //         Minecraft.getInstance().gui.setScreen(new ChatScreen("", false));
-      //
-      //         GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), mx, my);
-      //         ((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
-      //      }).bounds(116, this.height - 38, 96, 20).build();
+      })
+      .bounds(30, this.height - 38, 96, 20)
+      .tooltip(Tooltip.create(Component.literal("Switch to the Minecraft chat.")))
+      .build();
 
       //##  IRC button
       Button irc = Button.builder(Component.literal(ComplexircClient.talkinirc ? ">IRC<" : "IRC"), (button) -> {
@@ -89,37 +84,30 @@ public class chatscreenmixin extends Screen {
             ComplexircClient.setupirc();
          }
 
-         util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to> " + "<red>irc<gray> " + "<lang:text.chat.complexirc.chat>");
+         util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.switching_to> " + "<red>irc<gray> " + "<gray><lang:text.chat.complexirc.chat>");
 
          ComplexircClient.talkinirc = true;
          complexirc$updateButtonLabels();
 
-      }).bounds(116, this.height - 38, 96, 20)
-      .build();
-
-      //##  Encrypt button
-      Button cat = Button.builder(Component.literal(ComplexircClient.cat ? ">Mrewcrypted<" : "Mrewcrypted"), (button) -> {
-         ComplexircClient.cat = !ComplexircClient.cat;
-         util.msg("<blue>IRC | "+(ComplexircClient.cat ? "messages you send are now encrypted in cat":"no longer encrypting"));
-          complexirc$updateButtonLabels();
-      }).bounds(220, this.height - 38, 96, 20)
-      .tooltip(Tooltip.create(Component.literal("Encrypts your message into meows (code by vortextraveler)")))
+      })
+      .bounds(130, this.height - 38, 96, 20)
+      .tooltip(Tooltip.create(Component.literal("Switch to the IRC chat.")))
       .build();
 
       this.addRenderableWidget(mc);
       this.addRenderableWidget(irc);
       if (!ComplexircClient.CONFIG.preferencesConfig.disablecat) {
-         this.addRenderableWidget(cat);
+         this.addRenderableWidget(enc);
       }
       complexirc$mcButton = mc;
       complexirc$ircButton = irc;
-      complexirc$catButton = cat;
+      complexirc$catButton = enc;
       //this.addRenderableWidget(global);
-
    }
 
    //Fixed button labels not updating when switching between chat screens.
    //sax i hate comments and capital letters
+   //Software engineer sax mode enabled
    @Unique
    private void complexirc$updateButtonLabels() {
 //      complexirc$mcButton.setMessage(Component.literal(ComplexircClient.talkinirc ? " Minecraft" : ">Minecraft<"));
@@ -134,8 +122,6 @@ public class chatscreenmixin extends Screen {
       if (ComplexircClient.talkinirc) {
          graphics.fill(2, this.height - 14, this.width - 2, this.height - 2, 0x703D8EFF);
       }
-
-
    }
 
    @Inject(method = "keyPressed", at = @At("TAIL"))
@@ -144,9 +130,5 @@ public class chatscreenmixin extends Screen {
          this.setFocused(this.input);
       }
      // ci.setReturnValue(false);
-
    }
-
-
-
 }

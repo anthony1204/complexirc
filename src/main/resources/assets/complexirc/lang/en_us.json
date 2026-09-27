@@ -1,5 +1,7 @@
 {
   "text.key.category.complexirc.keybinds": "Complex IRC",
+  "text.category.complexirc.keybinds": "Complex IRC",
+  "text.key.complexirc.keybinds": "Complex IRC",
   "text.key.complexirc.toggle": "Toggle IRC/Minecraft Chat",
 
   "text.autoconfig.complexirc.title": "Complex IRC Config",
@@ -45,6 +47,7 @@
   "text.chat.complexirc.kicked_from_channel": "-%s (%s) was kicked from %s channel by %s (%s).",
   "text.chat.complexirc.no_topic": "No topic set for this channel.",
   "text.chat.complexirc.reconnecting": "Attempting to reconnect IRC server...",
-  "text.chat.complexirc.channel_joined": "Joined channel:"
-
+  "text.chat.complexirc.channel_joined": "Joined channel:",
+  "text.chat.complexirc.joining_channel": "Joining Channel:",
+  "text.chat.complexirc.incorrect_channel": "This channel does not exist."
 }

@@ -49,7 +49,7 @@ public class clientpacketlistenermixin {
          ifcat = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, ifcat);
          Complexirc.LOGGER.info("after decrypt: " + ifcat);
 
-         ifcat = ifcat + " [dec]";
+         ifcat = ifcat + " <gray><decrypted>";
 
          //StringBuilder f = new StringBuilder();
          if (Minecraft.getInstance().getConnection() == null) {
@@ -69,7 +69,8 @@ public class clientpacketlistenermixin {
          ComplexircClient.xshownextmsg = true;
          //chat signing is very annoying to work with...
          Minecraft.getInstance().getConnection().handlePlayerChat(new ClientboundPlayerChatPacket(packet.globalIndex(), packet.sender(), packet.index(),packet.signature(),packet.body(), packet.unsignedContent(), packet.filterMask(), packet.chatType()));
-         util.msg(Minecraft.getInstance().getConnection().getPlayerInfo(packet.sender()).getProfile().name()+": "+ifcat);
+         String playerName = Minecraft.getInstance().getConnection().getPlayerInfo(packet.sender()).getProfile().name();
+         util.msg("<" + playerName + "> "+ ifcat);
          //ci.cancel();
       }
    }
