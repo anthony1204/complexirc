@@ -9,12 +9,19 @@ import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.client.multiplayer.chat.GuiMessageSource;
 import net.minecraft.client.multiplayer.chat.GuiMessageTag;
 import net.minecraft.network.chat.Component;
+import com.google.common.collect.ImmutableList;
+
+import java.awt.List;
+import java.util.ArrayList;
+
+import org.pircbotx.ChannelListEntry;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
 import top.anthonycat.complexirc.Complexirc;
 
 public class listener extends ListenerAdapter {
+   public static ArrayList<String> cList;
    MiniMessage mm = MiniMessage.miniMessage();
    Audience a = MinecraftClientAudiences.of().audience();
 
@@ -25,6 +32,8 @@ public class listener extends ListenerAdapter {
       if (Minecraft.getInstance().player!=null){
          util.msg("<green>IRC | <lang:text.chat.complexirc.connected> <gray>" + ComplexircClient.CONFIG.serverConfig.serverip + ":" + ComplexircClient.CONFIG.serverConfig.port);
       }
+      ComplexircClient.bot.sendIRC().listChannels();
+      Complexirc.LOGGER.info("Fetching channels");
    }
 
    @Override
@@ -72,25 +81,36 @@ public class listener extends ListenerAdapter {
       // }
          if (e.getUser().getNick().equalsIgnoreCase(e.getBot().getNick())) {
             //If the user that joined is not the bot itself, print self join msg.
-            if (!e.getChannel().getName().equalsIgnoreCase(ComplexircClient.CONFIG.serverConfig.postjoinchannel)) {
+            if (!e.getChannel().getName().equalsIgnoreCase(ComplexircClient.CONFIG.serverConfig.postjoinchannel) && ComplexircClient.prefferedChannel == null) {
                util.msg("<red>IRC | <gray><lang:text.chat.complexirc.wrong_channel>");
                ComplexircClient.bot.stopBotReconnect();
                return;
             }
             //Successful join
+            ComplexircClient.prefferedChannel = null;
             ComplexircClient.talkinirc = true;
             ComplexircClient.CONFIG.postcommand.forEach(command -> {
                ComplexircClient.bot.sendRaw().rawLine(command);
                Complexirc.LOGGER.info("sending {}", command);
             });
             if (Minecraft.getInstance().player!=null){
-               util.msg("<green>IRC | <gray><lang:text.chat.complexirc.channel_joined> " + e.getChannel().getName());
+               util.msg("<green>IRC | <gray><lang:text.chat.complexirc.channel_joined> <green>" + e.getChannel().getName());
             }
          } else {
             //If connected user is not the bot itself, print join msg.
-            util.msg("<green>IRC | +%s (%s) joined %s channel.".formatted(e.getUser().getNick(),e.getUser().getRealName(),e.getChannel().getName()));
+            util.msg("<green>IRC | +%s (%s) <gray>joined <green>%s <gray>channel.".formatted(e.getUser().getNick(), e.getUser().getRealName(), e.getChannel().getName()));
          }
          return;
+   }
+
+   @Override 
+   public void onChannelInfo(ChannelInfoEvent e){
+      Complexirc.LOGGER.info("Recieved channels: "+ e);
+      cList = new ArrayList<String>();
+      e.getList().forEach(c -> {
+         cList.add(c.getName());
+      });
+      return;
    }
 
    @Override
@@ -98,7 +118,7 @@ public class listener extends ListenerAdapter {
       if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
          return;
       }
-      util.msg("<red>IRC | -%s (%s) quitting.".formatted(e.getUser().getNick(),e.getUser().getRealName()));
+      util.msg("<red>IRC | -%s (%s) quitting.".formatted(e.getUser().getNick(), e.getUser().getRealName()));
    }
 
    @Override
@@ -160,7 +180,7 @@ public class listener extends ListenerAdapter {
             message = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, message);
          } catch (Exception _) {}
          Complexirc.LOGGER.info("after decrypt: "+message);
-         message = message + " [dec]";
+         message = message + " <gray><decrypted>";
          if (message.contains("failedtodecode")) message = e.getMessage() + " [failed to decode]";
       }
 
