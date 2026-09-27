@@ -34,7 +34,7 @@ jobs:
       - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "main-branch"
+          tag_name: "main-dont-use"
           alias: "main-branch-dont-use"
           prerelease: true
           files: |
