@@ -34,8 +34,8 @@ jobs:
       - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "latest"
-          alias: "latest"
+          tag_name: "main-branch"
+          alias: "main-branch-dont-use"
           prerelease: true
           files: |
             build/libs/*.jar
