@@ -81,7 +81,7 @@ public class ExampleClientMixin {
 			allow = true;
 			if (ComplexircClient.CONFIG.preferencesConfig.disablecat) neww = content;
 
-			if (ComplexircClient.cat&&!ComplexircClient.CONFIG.preferencesConfig.disablecat) util.msg("<blue>you: "+content+" [dec]");
+			if (ComplexircClient.cat&&!ComplexircClient.CONFIG.preferencesConfig.disablecat) util.msg("<blue>you: "+content+" <gray><deccrypted>");
 			Minecraft.getInstance().getConnection().sendChat(ComplexircClient.cat?">w< ": neww);
 
 			return;
@@ -107,7 +107,7 @@ public class ExampleClientMixin {
 			if (ComplexircClient.cat) {
 				String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
 				ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, ">w< "+neww);
-				util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), ">w< "+content+" [enc]"));
+				util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), ">w< "+content+" <gray><encrypted>"));
 
 			} else {
 				ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, content);
@@ -142,7 +142,7 @@ public class ExampleClientMixin {
 		if (ComplexircClient.cat) {
 			String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
 			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, ">w< "+neww);
-			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content+" [enc]"));
+			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content+" <gray><encrypted>"));
 
 		} else {
 			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, content);
