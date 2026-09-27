@@ -1,6 +1,5 @@
 package top.anthonycat.complexirc.client.mixin;
 
-
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.kyori.adventure.audience.Audience;
@@ -57,11 +56,12 @@ public class chatscreenmixin extends Screen {
       //##  Encrypt button
       Button enc = Button.builder(Component.literal(ComplexircClient.cat ? "🔒" : "🔓"), (button) -> {
          ComplexircClient.cat = !ComplexircClient.cat;
-         util.msg("<blue>IRC | "+(ComplexircClient.cat ? "Messages you sent are now encrypted.":"Messages you sent are no longer encrypted."));
+         //why does this need a message
+        // util.msg("<blue>IRC | "+(ComplexircClient.cat ? "Messages you sent are now mrewcrypted.":"Messages you sent are no longer mrewcrypted."));
             complexirc$updateButtonLabels();
       })
       .bounds(5, this.height - 38, 20, 20)
-      .tooltip(Tooltip.create(Component.literal("Encrypts messages that are sent with a key. (configure the encyrption key in /irc openconfig)")))
+      .tooltip(Tooltip.create(Component.literal("mrewcrypts messages that are sent with a key. (configure the encyrption key in /irc openconfig)")))
       .build();
 
       //##  MC button
