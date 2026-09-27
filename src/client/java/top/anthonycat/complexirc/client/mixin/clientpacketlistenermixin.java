@@ -54,6 +54,7 @@ public class clientpacketlistenermixin {
          //StringBuilder f = new StringBuilder();
          if (Minecraft.getInstance().getConnection() == null) {
             Complexirc.LOGGER.info("unable to decode message due to connection being null");
+            
             return;
          }
          // f.append("<").append(Minecraft.getInstance().getConnection().getPlayerInfo(packet.sender()).getProfile().name()).append("> ").append(ifcat).append(" [dec]");
