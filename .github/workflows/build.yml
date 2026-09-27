@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
-      # this next 2 task/step is ai cause im too stupid
+      # this next 2 task/step is ai cause im too stupid 
       - name: Extract Version from gradle.properties
         id: get_version
         run: |
@@ -72,6 +72,7 @@ jobs:
           name: "${{ steps.get_version.outputs.version }}"
           draft: false
           prerelease: false
+          generate_release_notes: true
           files: |
             build/libs/*.jar
         env:
