@@ -15,6 +15,21 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
+      # this one task/step is ai cause im too stupid 
+      - name: Extract Version from gradle.properties
+        id: get_version
+        run: |
+          # Target the root gradle.properties and look specifically for mod_version=
+          VERSION=$(grep '^mod_version[[:space:]]*=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]\r')
+          
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Could not find mod_version in gradle.properties"
+            exit 1
+          fi
+          
+          echo "Extracted Version: $VERSION"
+          # Saves output as v1.0.1+26.2
+          echo "version=v$VERSION" >> $GITHUB_OUTPUT
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
       - name: setup jdk
@@ -30,12 +45,11 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: ComplexIRC
-          path: build/libs/
+          path: build/libs/*.jar
       - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "26.1.2-new"
-          alias: "26.1.2-new"
+          tag_name: "${{ steps.get_version.outputs.version }}"
           prerelease: false
           files: |
             build/libs/*.jar
