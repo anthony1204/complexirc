@@ -13,6 +13,15 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
+      # this one line is ai cause im too stupid 
+      - name: Extract Version from gradle.properties
+        id: get_version
+        run: |
+          # Finds the line starting with mod-version= and extracts everything after the =
+          VERSION=$(grep '^mod-version=' gradle.properties | cut -d'=' -f2 | xor tr -d '[:space:]')
+          echo "Extracted Version: $VERSION"
+          # Saves it as an output variable for later steps
+          echo "version=v$VERSION" >> $GITHUB_OUTPUT
       - name: checkout repository
         uses: actions/checkout@v6
       - name: validate gradle wrapper
@@ -34,8 +43,7 @@ jobs:
       - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "main-dont-use"
-          alias: "main-branch-dont-use"
+          tag_name: "main-dont-use-${{ steps.get_version.outputs.version }}"
           prerelease: true
           files: |
             build/libs/*.jar
