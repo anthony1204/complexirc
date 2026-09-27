@@ -81,7 +81,7 @@ public class ExampleClientMixin {
 			allow = true;
 			if (ComplexircClient.CONFIG.preferencesConfig.disablecat) neww = content;
 
-			if (ComplexircClient.cat&&!ComplexircClient.CONFIG.preferencesConfig.disablecat) util.msg("<blue>you: "+content+" <gray><deccrypted>");
+			if (ComplexircClient.cat&&!ComplexircClient.CONFIG.preferencesConfig.disablecat) util.msg("<blue>you: "+content+" <gray><decrypted>");
 			Minecraft.getInstance().getConnection().sendChat(ComplexircClient.cat?">w< ": neww);
 
 			return;
