@@ -90,7 +90,7 @@ public class chatscreenmixin extends Screen {
          complexirc$updateButtonLabels();
 
       })
-      .bounds(130, this.height - 38, 96, 20)
+      .bounds(132, this.height - 38, 96, 20)
       .tooltip(Tooltip.create(Component.literal("Switch to the IRC chat.")))
       .build();
 
