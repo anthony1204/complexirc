@@ -131,7 +131,7 @@ public class listener extends ListenerAdapter {
 
    @Override
    public void onNotice(NoticeEvent e){
-      if (ComplexircClient.CONFIG.preferencesConfig.sendnotice==false) return;
+      if (!ComplexircClient.CONFIG.preferencesConfig.sendnotice) return;
       util.msg("<yellow>IRC | Notice: "+e.getNotice());
    }
 
