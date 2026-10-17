@@ -1,5 +1,12 @@
 # Complex IRC
-a mod that adds irc support into the chat, complete with chat channels.
+a mod that adds irc support into the chat
+
+(this description is SO outdated, needs rewriting)
+
+
+
+
+
 
 [modrith link](https://modrinth.com/mod/complex-irc)
 
