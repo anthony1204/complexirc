@@ -1,5 +1,6 @@
 package top.anthonycat.complexirc.client;
 
+import com.frikinjay.dungeonconfig.client.screen.DungeonConfigScreen;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
@@ -66,6 +67,9 @@ public class ComplexircClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+
+		ConfigV2.init();
+		System.out.println("test value in complexirc konfig: "+ConfigV2.test.get());
 
 		AutoConfig.register(top.anthonycat.complexirc.client.Configuration.class, Toml4jConfigSerializer::new);
 		CONFIG = AutoConfig.getConfigHolder(top.anthonycat.complexirc.client.Configuration.class).getConfig();
@@ -147,12 +151,13 @@ public class ComplexircClient implements ClientModInitializer {
 				).then(
 					ClientCommands.literal("openconfig")
 						.executes((c) ->{
-							util.msg("<blue>IRC | Opening config screen...");
+							util.msg("<blue>IRC | opening test config screen...");
 
 							Minecraft.getInstance().execute(() -> {
-								Screen s = AutoConfigClient.getConfigScreen(top.anthonycat.complexirc.client.Configuration.class, Minecraft.getInstance().gui.screen()).get();
+								//Screen s = AutoConfigClient.getConfigScreen(top.anthonycat.complexirc.client.Configuration.class, Minecraft.getInstance().gui.screen()).get();
 								//	util.msg("aughscreen: "+s.toString());
-								Minecraft.getInstance().setScreenAndShow(s);
+								Minecraft.getInstance().setScreenAndShow(new DungeonConfigScreen(Minecraft.getInstance().gui.screen(), ConfigV2.CONFIG));
+								//Minecraft.getInstance().setScreenAndShow(s);
 
 							});
 

@@ -17,7 +17,7 @@ repositories {
 	maven { url = "https://repo.codemc.io/repository/relativitymc/"}
 	maven { url 'https://maven.wispforest.io/releases/' }
 	maven { url "https://maven.shedaniel.me/" }
-	maven { url "https://maven.terraformersmc.com/releases/" }
+	mavenLocal()
 }
 
 loom {
@@ -68,6 +68,10 @@ dependencies {
 	//modImplementation 'net.kyori:adventure-text-minimessage:5.2.0'
 	implementation include("net.kyori:adventure-platform-fabric:7.2.0")
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.5.5")))
+	implementation "com.frikinjay:DungeonConfig-26.1.x-fabric:1.26.10.1"
+	include "com.frikinjay:DungeonConfig-26.1.x-fabric:1.26.10.1"
+
+
 }
 //	modCompileOnly("net.kyori:adventure-platform-mod-shared-fabric-repack:6.8.0")
 
