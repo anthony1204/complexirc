@@ -15,29 +15,30 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
-      # this next 2 task/step is ai cause im too stupid 
+
       - name: Extract Version from gradle.properties
         id: get_version
         run: |
           # Target the root gradle.properties and look specifically for mod_version=
           VERSION=$(grep '^mod_version[[:space:]]*=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]\r')
-          
+
           if [ -z "$VERSION" ]; then
             echo "ERROR: Could not find mod_version in gradle.properties"
             exit 1
           fi
-          
+
           echo "Extracted Version: $VERSION"
           # Saves output as v1.0.1+26.2
           echo "version=v$VERSION" >> $GITHUB_OUTPUT
+
       - name: Check if Release Exists
         id: check_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TARGET_TAG="${{ steps.get_version.outputs.version }}"
-          
-          # Use GitHub CLI to check if the release exists. 
+
+          # Use GitHub CLI to check if the release exists.
           # || true prevents the script from crashing when gh returns a 404 error code.
           RELEASE_CHECK=$(gh release view "$TARGET_TAG" --json tagName 2>&1 || true)
 
@@ -48,22 +49,37 @@ jobs:
             echo "RELEASE_EXISTS=false" >> $GITHUB_OUTPUT
             echo "✅ Release $TARGET_TAG does not exist yet. Proceeding with deployment."
           fi
+
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
+
       - name: setup jdk
         uses: actions/setup-java@v5
         with:
           java-version: '25'
           distribution: 'microsoft'
+
+      - name: clone and publish DungeonConfig to local maven
+        run: |
+          git clone --depth 1 https://github.com/frikinjay/dungeonconfig.git /tmp/dungeonconfig
+          cd /tmp/dungeonconfig
+          # The repo pins a Windows JDK path; drop it so Gradle uses the runner's JDK.
+          sed -i '/org.gradle.java.home/d' gradle.properties
+          chmod +x ./gradlew
+          ./gradlew :common:publishToMavenLocal :fabric:publishToMavenLocal
+
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
+
       - name: build
         run: ./gradlew build
+
       - name: capture build artifacts
         uses: actions/upload-artifact@v7
         with:
           name: ComplexIRC
           path: build/libs/*.jar
+
       - name: Create GitHub Release
         if: github.repository == 'anthony1204/complexirc' && steps.check_release.outputs.RELEASE_EXISTS != 'true'
         uses: softprops/action-gh-release@v2
@@ -77,4 +93,3 @@ jobs:
             build/libs/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
