@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.anthonycat.complexirc.Complexirc;
 import top.anthonycat.complexirc.client.ComplexircClient;
+import top.anthonycat.complexirc.client.Configuration;
 import top.anthonycat.complexirc.client.util;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public abstract class chatcomponentmixin {
          return;
       }
 
-      if ((source.equals(GuiMessageSource.PLAYER) && contents.getString().contains("join irc")) && ComplexircClient.CONFIG.preferencesConfig.forcejoin && ComplexircClient.bot == null) {
+      if ((source.equals(GuiMessageSource.PLAYER) && contents.getString().contains("join irc")) && Configuration.forcejoin.get() && ComplexircClient.bot == null) {
          ComplexircClient.setupirc();
          util.msg("<yellow>IRC | <gray><lang:text.chat.complexirc.force_connect>");
       }

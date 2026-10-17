@@ -56,9 +56,9 @@ dependencies {
 
 	include(implementation 'com.github.pircbotx:pircbotx:2.3.1')
 
-	api("me.shedaniel.cloth:cloth-config-fabric:26.1.154") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+	//api("me.shedaniel.cloth:cloth-config-fabric:26.1.154") {
+	//	exclude(group: "net.fabricmc.fabric-api")
+	//}
 
 //	implementation "com.terraformersmc:modmenu:18.0.1"
 
@@ -66,7 +66,8 @@ dependencies {
 //	annotationProcessor implementation("io.wispforest:owo-lib:${project.owo_version}")
 
 	//modImplementation 'net.kyori:adventure-text-minimessage:5.2.0'
-	implementation include("net.kyori:adventure-platform-fabric:7.2.0")
+	implementation "net.kyori:adventure-platform-fabric:7.2.0"
+	include "net.kyori:adventure-platform-fabric:7.2.0"
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.5.5")))
 	implementation "com.frikinjay:DungeonConfig-26.1.x-fabric:1.26.10.1"
 	include "com.frikinjay:DungeonConfig-26.1.x-fabric:1.26.10.1"

@@ -3,7 +3,7 @@
   "text.key.complexirc.toggle": "Toggle IRC/Minecraft Chat",
 
   "text.autoconfig.complexirc.title": "Complex IRC Config",
-  
+
   "text.autoconfig.complexirc.option.serverConfig": "Server Configuration",
   "text.autoconfig.complexirc.option.serverConfig.serverip": "IRC server IP",
   "text.autoconfig.complexirc.option.serverConfig.port": "IRC server port",

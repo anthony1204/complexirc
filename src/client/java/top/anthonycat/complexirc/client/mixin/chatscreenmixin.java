@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.anthonycat.complexirc.Complexirc;
 import top.anthonycat.complexirc.client.ComplexircClient;
+import top.anthonycat.complexirc.client.Configuration;
 import top.anthonycat.complexirc.client.util;
 
 import java.awt.*;
@@ -108,7 +109,7 @@ public class chatscreenmixin extends Screen {
 
       this.addRenderableWidget(mc);
       this.addRenderableWidget(irc);
-      if (!ComplexircClient.CONFIG.preferencesConfig.disablecat) {
+      if (!Configuration.disablecat.get() ) {
          this.addRenderableWidget(cat);
       }
       complexirc$mcButton = mc;

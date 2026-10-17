@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.anthonycat.complexirc.Complexirc;
 import top.anthonycat.complexirc.client.ComplexircClient;
+import top.anthonycat.complexirc.client.Configuration;
 import top.anthonycat.complexirc.client.NOT_MY_CODE;
 import top.anthonycat.complexirc.client.util;
 
@@ -31,7 +32,7 @@ public class clientpacketlistenermixin {
          return;
       }
 
-      if (ComplexircClient.CONFIG.preferencesConfig.disablecat) return;
+      if (Configuration.disablecat.get()) return;
 
       String msg = packet.body().content();
       if (msg.isEmpty()) {
@@ -46,7 +47,7 @@ public class clientpacketlistenermixin {
 
       if (ifcat != msg) {
          Complexirc.LOGGER.info("before decrypt: " + ifcat);
-         ifcat = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, ifcat);
+         ifcat = NOT_MY_CODE.decrypt(Configuration.meowkey.get(), ifcat);
          Complexirc.LOGGER.info("after decrypt: " + ifcat);
 
          ifcat = ifcat + " [dec]";

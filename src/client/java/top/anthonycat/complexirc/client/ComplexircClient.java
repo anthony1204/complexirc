@@ -1,13 +1,12 @@
 package top.anthonycat.complexirc.client;
 
+import com.frikinjay.dungeonconfig.api.DungeonConfig;
 import com.frikinjay.dungeonconfig.client.screen.DungeonConfigScreen;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.sun.jna.platform.unix.X11;
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.AutoConfigClient;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
@@ -41,7 +40,6 @@ import java.util.List;
 
 public class ComplexircClient implements ClientModInitializer {
 
-	public static top.anthonycat.complexirc.client.Configuration CONFIG = null;
 
 	public KeyMapping mcirc = new KeyMapping("text.key.complexirc.toggle", InputConstants.Type.KEYBOARD, InputConstants.KEY_MINUS, KeyMapping.Category.register(Identifier.fromNamespaceAndPath("complexirc", "keybinds")));
 
@@ -68,17 +66,26 @@ public class ComplexircClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 
-		ConfigV2.init();
-		System.out.println("test value in complexirc konfig: "+ConfigV2.test.get());
+	//	CONFIG = top.anthonycat.complexirc.client.Configuration.CONFIG;
 
-		AutoConfig.register(top.anthonycat.complexirc.client.Configuration.class, Toml4jConfigSerializer::new);
-		CONFIG = AutoConfig.getConfigHolder(top.anthonycat.complexirc.client.Configuration.class).getConfig();
+
+	//	System.out.println("test value in complexirc konfig: "+ConfigV2.test.get());
+
+	//	AutoConfig.register(top.anthonycat.complexirc.client.Configuration.class, Toml4jConfigSerializer::new);
+	//	CONFIG = AutoConfig.getConfigHolder(top.anthonycat.complexirc.client.Configuration.class).getConfig();
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		//setupirc();
 		KeyMappingHelper.registerKeyMapping(mcirc);
 
+		top.anthonycat.complexirc.client.Configuration.init();
+
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+
+			//util.msg("debug username: "+ConfigV2.server.username.get());
+
+
+
 			while (mcirc.consumeClick()) {
 				if (bot==null||!bot.isConnected()){
 					util.msg("<yellow>IRC | <gray><lang:text.chat.complexirc.not_connected_force>");
@@ -149,14 +156,27 @@ public class ComplexircClient implements ClientModInitializer {
 							return 1;
 						})
 				).then(
+							ClientCommands.literal("forcedisconnect")
+									.executes((c) ->{
+										if (bot==null||!bot.isConnected()){
+											util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.not_connected>");
+											return 1;
+										}
+										bot.stopBotReconnect();
+										ircthread.interrupt();
+										util.msg("<red>IRC | force disconnected (i didnt test this btw)");
+										talkinirc = false;
+										return 1;
+									})
+					).then(
 					ClientCommands.literal("openconfig")
 						.executes((c) ->{
-							util.msg("<blue>IRC | opening test config screen...");
+							util.msg("<blue>IRC | opening config screen...");
 
 							Minecraft.getInstance().execute(() -> {
 								//Screen s = AutoConfigClient.getConfigScreen(top.anthonycat.complexirc.client.Configuration.class, Minecraft.getInstance().gui.screen()).get();
 								//	util.msg("aughscreen: "+s.toString());
-								Minecraft.getInstance().setScreenAndShow(new DungeonConfigScreen(Minecraft.getInstance().gui.screen(), ConfigV2.CONFIG));
+								Minecraft.getInstance().setScreenAndShow(new DungeonConfigScreen(Minecraft.getInstance().gui.screen(), top.anthonycat.complexirc.client.Configuration.CONFIG));
 								//Minecraft.getInstance().setScreenAndShow(s);
 
 							});
@@ -166,14 +186,16 @@ public class ComplexircClient implements ClientModInitializer {
 				).then(
 					ClientCommands.literal("list")
 						.executes((c) ->{
+						//	ConfigV2.test.set("uwu");
+							//ConfigV2.CONFIG.save();
 							if (bot==null||!bot.isConnected()){
 								util.msg("<blue>IRC | <gray><lang:text.chat.complexirc.not_connected>");
 								return 1;
 							}
 							StringBuilder names = new StringBuilder("users in ");
-							names.append(CONFIG.serverConfig.postjoinchannel).append(": ");
+							names.append(top.anthonycat.complexirc.client.Configuration.postjoinchannel.get()).append(": ");
 
-							names.append(String.join(", ", bot.getUserChannelDao().getChannel(CONFIG.serverConfig.postjoinchannel).getUsersNicks()));
+							names.append(String.join(", ", bot.getUserChannelDao().getChannel(top.anthonycat.complexirc.client.Configuration.postjoinchannel.get()	).getUsersNicks()));
 
 							util.msg("<blue>IRC | "+names);
 
@@ -183,6 +205,11 @@ public class ComplexircClient implements ClientModInitializer {
 			);
 
 
+
+
+
+
+
 			dispatcher.register(
 				ClientCommands.literal("dm")
 					.then(ClientCommands.argument("nick",StringArgumentType.word()).suggests(((commandContext, suggestionsBuilder) -> {
@@ -190,7 +217,7 @@ public class ComplexircClient implements ClientModInitializer {
 							suggestionsBuilder.suggest("connect to irc first");
 							return suggestionsBuilder.buildFuture();
 						}
-						bot.getUserChannelDao().getChannel(CONFIG.serverConfig.postjoinchannel).getUsersNicks().forEach(suggestionsBuilder::suggest);
+						bot.getUserChannelDao().getChannel(top.anthonycat.complexirc.client.Configuration.postjoinchannel.get()).getUsersNicks().forEach(suggestionsBuilder::suggest);
 
 						return suggestionsBuilder.buildFuture();
 					})).then(
@@ -209,7 +236,15 @@ public class ComplexircClient implements ClientModInitializer {
 						}))
 					))
 			);
+
+
+
+
+
+
 		}));
+
+
 
 
 	}
@@ -229,34 +264,36 @@ public class ComplexircClient implements ClientModInitializer {
 
 		audience.sendMessage(ComplexircClient.mm.deserialize("<yellow>IRC | <gray><lang:text.chat.complexirc.connecting>"));
 
-		StringBuilder channelwithpass = new StringBuilder();
-
-		channelwithpass.append(CONFIG.serverConfig.postjoinchannel);
-		if (CONFIG.serverConfig.channelpass!=""){
-			channelwithpass.append(" ").append(CONFIG.serverConfig.channelpass);
-		}
+//		StringBuilder channelwithpass = new StringBuilder();
+//
+//		//apparently hashtags dont work in dungeonconfig
+//		channelwithpass.append(top.anthonycat.complexirc.client.Configuration.postjoinchannel);
+//		if (top.anthonycat.complexirc.client.Configuration.channelpass.get()!=""){
+//			channelwithpass.append(" ").append(top.anthonycat.complexirc.client.Configuration.channelpass.get());
+//		}
 
 		config = new Configuration.Builder()
-              .setName(CONFIG.serverConfig.username) //Username
-              .setLogin(CONFIG.serverConfig.username) //Login part of hostmask, eg name:login@host
-				  .setRealName(CONFIG.serverConfig.username+" (ComplexIRC)") //Real name part of hostmask, eg name:login@host
-				  .setAutoReconnect(CONFIG.serverConfig.autoreconnect) 
+              .setName(top.anthonycat.complexirc.client.Configuration.username.get()) //Username
+              .setLogin(top.anthonycat.complexirc.client.Configuration.username.get()) //Login part of hostmask, eg name:login@host
+				  .setRealName(Minecraft.getInstance().getUser().getName()+" (ComplexIRC)") //Real name part of hostmask, eg name:login@host
+				  .setAutoReconnect(top.anthonycat.complexirc.client.Configuration.autoreconnect.get())
 				  .setAutoReconnectAttempts(5)
               .setAutoNickChange(true) //Automatically change nick when the current one is in use
-              .addAutoJoinChannel(channelwithpass.toString())//Join the channel on connect, with password if provided
+            //  .addAutoJoinChannel(channelwithpass.toString())//Join the channel on connect, with password if provided
               .addListener(new listener()) 
-				  .addServer(CONFIG.serverConfig.serverip, CONFIG.serverConfig.port) 
+				  .addServer(top.anthonycat.complexirc.client.Configuration.serverip.get(), top.anthonycat.complexirc.client.Configuration.port.get())
+
 				.buildConfiguration();
 		ircthread = new Thread(() -> {
 				bot = new PircBotX(config);
          	try {
             	bot.startBot();
          	} catch (IOException | IrcException e) {
-				Complexirc.LOGGER.info("Error connecting to IRC server: "+ e.getMessage());
+				Complexirc.LOGGER.info("*kaboom* irc server connection failed: "+ e.getMessage());
          	}
       },"ircthread");
 			ircthread.start();
-			Complexirc.LOGGER.info("Starting irc thread...");
+			Complexirc.LOGGER.info("irc thread starting");
 
 
 	}
@@ -267,6 +304,4 @@ public class ComplexircClient implements ClientModInitializer {
 		global
 	}
 
-    public class CONFIG {
-    }
 }

@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.anthonycat.complexirc.Complexirc;
 import top.anthonycat.complexirc.client.ComplexircClient;
+import top.anthonycat.complexirc.client.Configuration;
 import top.anthonycat.complexirc.client.NOT_MY_CODE;
 import top.anthonycat.complexirc.client.util;
 
@@ -30,15 +31,15 @@ public class ExampleClientMixin {
 		}
 
 		//kindly find a better way to update this when config is changed
-		if (ComplexircClient.CONFIG.preferencesConfig.disablecat) ComplexircClient.cat = false;
+		if (Configuration.disablecat.get()) ComplexircClient.cat = false;
 
 
 
 		//was going to add the no cat chat thing here but its kinda useless as you cant even
 		//ignore the previous comment i had a brainwave
-		if (ComplexircClient.cat&&!ComplexircClient.talkinirc&&!ComplexircClient.CONFIG.preferencesConfig.disablecat){
+		if (ComplexircClient.cat&&!ComplexircClient.talkinirc&&!Configuration.disablecat.get()){
 			info.cancel();
-			String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
+			String neww = NOT_MY_CODE.encrypt(Configuration.meowkey.get(), content);
 			if (neww.length()>=256){
 				util.msg("<blue>C.A.T | encrypted message too long, will get you kicked");
 				return;
@@ -70,7 +71,7 @@ public class ExampleClientMixin {
 //			allow = true;
 //			Minecraft.getInstance().getConnection().sendChat(content);
 			info.cancel();
-			String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
+			String neww = NOT_MY_CODE.encrypt(Configuration.meowkey.get(), content);
 			if (neww.length()>=256){
 				util.msg("<blue>C.A.T | encrypted message too long, will get you kicked");
 				return;
@@ -79,9 +80,9 @@ public class ExampleClientMixin {
 			if (!ComplexircClient.cat) neww = content;
 
 			allow = true;
-			if (ComplexircClient.CONFIG.preferencesConfig.disablecat) neww = content;
+			if (Configuration.disablecat.get()) neww = content;
 
-			if (ComplexircClient.cat&&!ComplexircClient.CONFIG.preferencesConfig.disablecat) util.msg("<blue>you: "+content+" [dec]");
+			if (ComplexircClient.cat&&!Configuration.disablecat.get()) util.msg("<blue>you: "+content+" [dec]");
 			Minecraft.getInstance().getConnection().sendChat(ComplexircClient.cat?">w< ": neww);
 
 			return;
@@ -105,12 +106,12 @@ public class ExampleClientMixin {
 			//					aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
 						//((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
 			if (ComplexircClient.cat) {
-				String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
-				ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, ">w< "+neww);
+				String neww = NOT_MY_CODE.encrypt(Configuration.meowkey.get(), content);
+				ComplexircClient.bot.sendIRC().message(Configuration.postjoinchannel.get(), ">w< "+neww);
 				util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), ">w< "+content+" [enc]"));
 
 			} else {
-				ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, content);
+				ComplexircClient.bot.sendIRC().message(Configuration.postjoinchannel.get(), content);
 				util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content));
 			}
 			return;
@@ -140,12 +141,12 @@ public class ExampleClientMixin {
 		//				aug, null, GuiMessageSource.PLAYER, GuiMessageTag.chatNotSecure()));
 		//		((hiss) Minecraft.getInstance().gui.hud.getChat()).complexirc$customrefresh();
 		if (ComplexircClient.cat) {
-			String neww = NOT_MY_CODE.encrypt(ComplexircClient.CONFIG.meowkey, content);
-			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, ">w< "+neww);
+			String neww = NOT_MY_CODE.encrypt(Configuration.meowkey.get(), content);
+			ComplexircClient.bot.sendIRC().message(Configuration.postjoinchannel.get(), ">w< "+neww);
 			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content+" [enc]"));
 
 		} else {
-			ComplexircClient.bot.sendIRC().message(ComplexircClient.CONFIG.serverConfig.postjoinchannel, content);
+			ComplexircClient.bot.sendIRC().message(Configuration.postjoinchannel.get(), content);
 			util.msg("<blue>IRC | <white><<red>%s<reset>> %s".formatted(ComplexircClient.bot.getNick(), content));
 		}
 

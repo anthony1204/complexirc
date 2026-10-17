@@ -23,8 +23,39 @@ public class listener extends ListenerAdapter {
       //Succesful connect
       Complexirc.LOGGER.info("Connected to irc server");
       if (Minecraft.getInstance().player!=null){
-         util.msg("<green>IRC | <lang:text.chat.complexirc.connected> <gray>" + ComplexircClient.CONFIG.serverConfig.serverip + ":" + ComplexircClient.CONFIG.serverConfig.port);
+         util.msg("<green>IRC | <lang:text.chat.complexirc.connected> <gray>" + Configuration.serverip.get() + ":" + Configuration.port.get());
       }
+
+      Configuration.postcommand.get().forEach(command -> {
+               ComplexircClient.bot.sendRaw().rawLine(command);
+               Complexirc.LOGGER.info("sending {}", command);
+            });
+
+//      StringBuilder channelwithpass = new StringBuilder();
+//
+//      //apparently hashtags dont work in dungeonconfig
+//      channelwithpass.append(top.anthonycat.complexirc.client.Configuration.postjoinchannel);
+//      if (top.anthonycat.complexirc.client.Configuration.channelpass.get()!=""){
+//         channelwithpass.append(" ").append(top.anthonycat.complexirc.client.Configuration.channelpass.get());
+//      }
+//      Complexirc.LOGGER.info("channnel with pass = "+channelwithpass);
+
+
+      //surely there is a better way
+      if (Configuration.channelpass.get().isEmpty()){
+         util.msg("<blue>IRC | attempting to join "+Configuration.postjoinchannel.get());
+         event.getBot().sendIRC().joinChannel(Configuration.postjoinchannel.get());
+      }else{
+         util.msg("<blue>IRC | attempting to join "+Configuration.postjoinchannel.get());
+         event.getBot().sendIRC().joinChannel(Configuration.postjoinchannel.get(),Configuration.channelpass.get());
+      }
+
+
+
+
+
+
+
    }
 
    @Override
@@ -57,13 +88,12 @@ public class listener extends ListenerAdapter {
    }
 
    //##  What is this info needed for? sk
-   // @Override
-   // public void onUserMode(UserModeEvent e){
-   //    if (!ComplexircClient.currentchannel.equals(ComplexircClient.channel.global)&&!ComplexircClient.currentchannel.equals(ComplexircClient.channel.irc)){
-   //       return;
-   //    }
-   //    util.msg("<yellow>IRC | <gray>Mode for "+e.getUser().getNick()+" changed to <purple>"+e.getMode());
-   // }
+   //why even comment it out.
+   //its for /umode
+    @Override
+    public void onUserMode(UserModeEvent e){
+       util.msg("<yellow>IRC | <gray>Mode for "+e.getUser().getNick()+" changed to <light_purple>"+e.getMode());
+    }
 
    @Override
    public void onJoin(JoinEvent e){
@@ -71,18 +101,23 @@ public class listener extends ListenerAdapter {
       //    return;
       // }
          if (e.getUser().getNick().equalsIgnoreCase(e.getBot().getNick())) {
-            //If the user that joined is not the bot itself, print self join msg.
-            if (!e.getChannel().getName().equalsIgnoreCase(ComplexircClient.CONFIG.serverConfig.postjoinchannel)) {
-               util.msg("<red>IRC | <gray><lang:text.chat.complexirc.wrong_channel>");
-               ComplexircClient.bot.stopBotReconnect();
-               return;
+            //why.
+//            if (!e.getChannel().getName().equalsIgnoreCase(Configuration.postjoinchannel.get())) {
+//               util.msg("<red>IRC | <gray><lang:text.chat.complexirc.wrong_channel>");
+//               ComplexircClient.bot.stopBotReconnect();
+//               return;
+//            }
+           // ComplexircClient.talkinirc = true;
+            //this is not even the correct spot
+//            Configuration.postcommand.get().forEach(command -> {
+//               ComplexircClient.bot.sendRaw().rawLine(command);
+//               Complexirc.LOGGER.info("sending {}", command);
+//            });
+
+            if (Configuration.joinchannelchatinirc.get()){
+               ComplexircClient.talkinirc = true;
             }
-            //Successful join
-            ComplexircClient.talkinirc = true;
-            ComplexircClient.CONFIG.postcommand.forEach(command -> {
-               ComplexircClient.bot.sendRaw().rawLine(command);
-               Complexirc.LOGGER.info("sending {}", command);
-            });
+
             if (Minecraft.getInstance().player!=null){
                util.msg("<green>IRC | <gray><lang:text.chat.complexirc.channel_joined> " + e.getChannel().getName());
             }
@@ -111,7 +146,7 @@ public class listener extends ListenerAdapter {
 
    @Override
    public void onNotice(NoticeEvent e){
-      if (ComplexircClient.CONFIG.preferencesConfig.sendnotice==false) return;
+      if (!Configuration.sendnotice.get()) return;
       util.msg("<yellow>IRC | Notice: "+e.getNotice());
    }
 
@@ -157,7 +192,7 @@ public class listener extends ListenerAdapter {
       if (message!=e.getMessage()){
          Complexirc.LOGGER.info("before decrypt: "+message);
          try {
-            message = NOT_MY_CODE.decrypt(ComplexircClient.CONFIG.meowkey, message);
+            message = NOT_MY_CODE.decrypt(Configuration.meowkey.get(), message);
          } catch (Exception _) {}
          Complexirc.LOGGER.info("after decrypt: "+message);
          message = message + " [dec]";
