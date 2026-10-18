@@ -58,15 +58,15 @@ jobs:
         with:
           java-version: '25'
           distribution: 'microsoft'
-
-      - name: clone and publish DungeonConfig to local maven
-        run: |
-          git clone --depth 1 https://github.com/frikinjay/dungeonconfig.git /tmp/dungeonconfig
-          cd /tmp/dungeonconfig
-          # The repo pins a Windows JDK path; drop it so Gradle uses the runner's JDK.
-          sed -i '/org.gradle.java.home/d' gradle.properties
-          chmod +x ./gradlew
-          ./gradlew :common:publishToMavenLocal :fabric:publishToMavenLocal
+#not needed anymore
+#      - name: clone and publish DungeonConfig to local maven
+#        run: |
+#          git clone --depth 1 https://github.com/frikinjay/dungeonconfig.git /tmp/dungeonconfig
+#          cd /tmp/dungeonconfig
+#          # The repo pins a Windows JDK path; drop it so Gradle uses the runner's JDK.
+#          sed -i '/org.gradle.java.home/d' gradle.properties
+#          chmod +x ./gradlew
+#          ./gradlew :common:publishToMavenLocal :fabric:publishToMavenLocal
 
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
