@@ -63,6 +63,9 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/frikinjay/dungeonconfig.git /tmp/dungeonconfig
           cd /tmp/dungeonconfig
+          # Port DungeonConfig from 26.1.2 to 26.3 (KEYSYM -> KEYBOARD, GLFW -> InputConstants,
+          # new screen/I18n/render APIs). Remove this once upstream supports 26.3.
+          git apply "$GITHUB_WORKSPACE/.github/dungeonconfig-26.3.patch"
           # The repo pins a Windows JDK path; drop it so Gradle uses the runner's JDK.
           sed -i '/org.gradle.java.home/d' gradle.properties
           chmod +x ./gradlew
