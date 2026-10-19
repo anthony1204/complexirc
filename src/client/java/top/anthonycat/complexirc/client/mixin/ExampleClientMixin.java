@@ -88,6 +88,8 @@ public class ExampleClientMixin {
 			return;
 		}
 
+
+      //todo: fix game freezes here when you prefix a message with # without being connected
 		if (content.startsWith("#")){
 			info.cancel();
 
