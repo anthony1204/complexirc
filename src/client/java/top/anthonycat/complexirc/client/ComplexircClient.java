@@ -213,7 +213,7 @@ public class ComplexircClient implements ClientModInitializer {
 			dispatcher.register(
 				ClientCommands.literal("dm")
 					.then(ClientCommands.argument("nick",StringArgumentType.word()).suggests(((commandContext, suggestionsBuilder) -> {
-						//todo: use CommandSource.suggestmatching for a better match and add /reply somewhere
+						//todo: use CommandSource.suggestmatching (SharedSuggestionProvider.suggest) for a better match and add /reply somewhere
 						if (bot==null||!bot.isConnected()){
 							suggestionsBuilder.suggest("connect to irc first");
 							return suggestionsBuilder.buildFuture();
